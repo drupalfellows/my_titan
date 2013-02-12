@@ -1,0 +1,4 @@
+name = Drupal Fellowship My Titan
+description = Drupal Fellowship My Titan install profiles
+version = VERSION
+core = 7.x

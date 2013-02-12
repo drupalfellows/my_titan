@@ -1,4 +1,4 @@
-my_titan
-========
+drupalacademy
+=============
 
-My Titan Fellowship Team
+Drupal Academy
