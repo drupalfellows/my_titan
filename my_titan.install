@@ -59,6 +59,7 @@ function my_titan_install() {
     'custom_config',
 
     // Features modules.
+    'mt_flashcard',
     )
   );
 }
