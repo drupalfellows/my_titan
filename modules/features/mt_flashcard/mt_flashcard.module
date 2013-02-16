@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Flashcard feature.
+ */
+
+include_once 'mt_flashcard.features.inc';
