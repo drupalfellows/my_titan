@@ -22,7 +22,7 @@ function mt_flashcard_node_info() {
     'flashcard' => array(
       'name' => t('flashcard'),
       'base' => 'node_content',
-      'description' => t('A flashcard blah blah.'),
+      'description' => t('A text question/answer pair'),
       'has_title' => '1',
       'title_label' => t('Title'),
       'help' => '',

@@ -11,7 +11,7 @@ core = 7.x
 ; Ascending Alphabetical order from the module name
 
 projects[admin_menu][subdir] = contrib
-projects[admin_menu][version] = 3.0-rc3
+projects[admin_menu][version] = 3.0-rc4
 
 projects[backup_migrate][subdir] = contrib
 projects[backup_migrate][version] = 2.4
@@ -32,7 +32,7 @@ projects[email][subdir] = contrib
 projects[email][version] = 1.2
 
 projects[entity][subdir] = contrib
-projects[entity][version] = 1.0-rc3
+projects[entity][version] = 1.0
 
 projects[features][subdir] = contrib
 projects[features][version] = 1.0
@@ -41,7 +41,7 @@ projects[globalredirect][subdir] = contrib
 projects[globalredirect][version] = 1.5
 
 projects[i18n][subdir] = contrib
-projects[i18n][version] = 1.7
+projects[i18n][version] = 1.8
 ; Patch helps with installin from drush.
 projects[i18n][patch][] = "http://drupal.org/files/static_reset.patch"
 
@@ -61,10 +61,13 @@ projects[token][subdir] = contrib
 projects[token][version] = 1.4
 
 projects[variable][subdir] = contrib
-projects[variable][version] = 2.1
+projects[variable][version] = 2.2
 
 projects[wysiwyg][subdir] = contrib
 projects[wysiwyg][version] = 2.2
+
+projects[auto_nodetitle][subdir] = contrib
+projects[auto_nodetitle][version] = 1.0
 
 ; THEMES
 

@@ -54,6 +54,8 @@ function my_titan_install() {
     'translation',
     'variable',
     'field_ui',
+    'taxonomy',
+    'auto_nodetitle',
 
     // Custom modules.
     'custom_config',
