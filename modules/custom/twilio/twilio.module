@@ -1,0 +1,466 @@
+<?php
+
+/**
+ * @file
+ * Twilio module
+ */
+
+/**
+ * Define constants for twilio
+ */
+define('TWILIO_LIBRARY', 'twilio');
+define('TWILIO_USER_PENDING', 1);
+define('TWILIO_USER_CONFIRMED', 2);
+define('TWILIO_USER_MAX_CHARS', 140);
+define('TWILIO_API_VERSION', '2010-04-01');
+
+/**
+ * Implements hook_menu().
+ */
+function twilio_menu() {
+  $items['admin/config/system/twilio'] = array(
+    'title' => 'Twilio',
+    'description' => 'Administer your twilio settings',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('twilio_admin_form'),
+    'access arguments' => array('access administration pages'),
+    'file' => 'twilio.admin.inc',
+  );
+  $items['admin/config/system/twilio/settings'] = array(
+    'title' => 'Twilio Settings',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => -10,
+  );
+  $items['admin/config/system/twilio/test'] = array(
+    'title' => 'Send test message',
+    'description' => 'Test your twilio SMS sending',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('twilio_admin_test_form'),
+    'access arguments' => array('access administration pages'),
+    'file' => 'twilio.admin.inc',
+    'type' => MENU_LOCAL_TASK,
+  );
+  $items['twilio/sms'] = array(
+    'page callback' => 'twilio_receive_message',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
+  $items['twilio/voice'] = array(
+    'page callback' => 'twilio_receive_voice',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_menu_alter().
+ */
+function twilio_menu_alter(&$callbacks) {
+  $callbacks['user/%user_category/edit/twilio']['page callback'] = 'twilio_user_settings';
+  $callbacks['user/%user_category/edit/twilio']['module'] = 'twilio';
+  $callbacks['user/%user_category/edit/twilio']['page arguments'] = array(1);
+  $callbacks['user/%user_category/edit/twilio']['file'] = 'twilio.pages.inc';
+}
+
+/**
+ * Implements hook_user_categories().
+ */
+function twilio_user_categories() {
+  return array(
+    array(
+      'name' => 'twilio',
+      'title' => t('Mobile SMS'),
+      'weight' => 3,
+    ),
+  );
+}
+
+/**
+ * Implements hook_permission().
+ */
+function twilio_permission() {
+  return array(
+    'edit own sms number' => array(
+      'title' => t('Edit own SMS number'),
+      'description' => t('TODO Add a description for \'edit own sms number\''),
+    ),
+  );
+}
+
+/**
+ * Access callback for twilio account editing.
+ */
+function twilio_edit_access($account) {
+  return user_edit_access($account) && user_access('edit own sms number');
+}
+
+/**
+ * Implements hook_libraries_info().
+ */
+function twilio_libraries_info() {
+  $libraries['twilio'] = array(
+    'name' => 'Twilio library',
+    'vendor url' => 'http://www.twilio.com',
+    'download url' => 'https://github.com/twilio/twilio-php/tarball/latest',
+    'path' => 'Services',
+    'version' => '2010-04-01',
+    'files' => array(
+      'php' => array(
+        'Twilio.php',
+      ),
+    ),
+  );
+  return $libraries;
+}
+
+/**
+ * Sends a message via Twilio.
+ *
+ * @param string $number
+ *   The phone number of the recipient
+ *
+ * @param string $message
+ *   The message to send to the recipient
+ */
+function twilio_send($number, $message) {
+  return twilio_command('sendmsg', array('number' => $number, 'message' => $message));
+}
+
+/**
+ * Validate 10 digit phone numbers.
+ *
+ * @param string $number
+ *   A potential phone number
+ *
+ * @param boolean $country_code
+ *   A flag indicating if the country code should be added.
+ *
+ * @result
+ *   A string with a properly formatted number, FALSE otherwise
+ */
+function twilio_validate_number($number, $country_code = TRUE) {
+  // Phone number regex validation - http://www.virtuosimedia.com/dev/php/37-tested-php-perl-and-javascript-regular-expressions
+  $regex = '/^((([0-9]{1})*[- .(]*([0-9]{3})[- .)]*[0-9]{3}[- .]*[0-9]{4})+)*$/';
+  if (preg_match($regex, $number)) {
+    // Clean up the number.
+    $number = preg_replace("/[^0-9]/", '', $number);
+    $number = trim($number);
+    // Remove any leading zeros.
+    $number = ltrim($number, '0');
+    if ($country_code) {
+      $index = strpos($number, '1');
+      if ($index === FALSE || $index > 0) {
+        $number = '1' . $number;
+      }
+    }
+    return $number;
+  }
+  else {
+    return FALSE;
+  }
+}
+
+/**
+ * Executes a command using the Twilio REST API.
+ */
+function twilio_command($command = 'auth', $data = array(), $config = NULL, $account = '') {
+
+  $result = array();
+
+  // Try to load the library and check if that worked.
+  if (($library = libraries_load(TWILIO_LIBRARY)) && !empty($library['loaded'])) {
+
+    // Set our AccountSid and AuthToken.
+    $account_sid = variable_get('twilio_account');
+    $auth_token = variable_get('twilio_token');
+
+    // Twilio REST API version
+    $ApiVersion = isset($config['sms_twilio_api']) && $config['sms_twilio_api'] ? $config['sms_twilio_api'] : TWILIO_API_VERSION;
+    
+      // Instantiate a new Twilio Rest Client
+    switch($ApiVersion) {
+      case '2010-04-01':
+      // Instantiate a new Twilio Rest Client.
+      $client = new Services_Twilio($account_sid, $auth_token);
+
+        switch ($command) {
+          case 'sendmsg':
+            $response  = $client->account->sms_messages->create(
+              variable_get('twilio_number'),
+              $data['number'],
+              $data['message']
+            );
+            break;
+        }
+        break;
+      case '2008-08-01':
+        // Include the PHP TwilioRest library  
+        $client = new TwilioRestClient($account_sid, $auth_token);
+  
+        switch ($command) {
+          case 'sendmsg':
+            $response = $client->request("/$ApiVersion/Accounts/$AccountSid/SMS/Messages",
+              "POST", array(
+              "To" => $data['number'],
+              "From" => variable_get('twilio_number'),
+              "Body" => $data['message'],
+            ));
+            break;
+        }
+        break;
+      default:
+        $result = array(
+          'status' => FALSE,
+          'message' => t('Invalid Twilio API: @api', array('@api', $ApiVersion)),
+        );
+        return $result;
+    }
+    
+    watchdog('Twilio', print_r($response, TRUE));
+    // Check for HTTP errors.
+    if (($ApiVersion == '2008-08-01') and ($response->IsError)) {
+      $result = array(
+        'status' => FALSE,
+        'message' => t('An error occured during the HTTP request: @error', array('@error' => $response->ErrorMessage))
+      );
+    } else if (($ApiVersion == '2010-04-01') and ($response->status == 'failed')) {
+      $result = array(
+        'status' => FALSE,
+        'message' => t('An error occured during the HTTP request'),
+      );
+    }
+    else {
+      $result = array(
+        'status' => TRUE,
+        'data' => t('Message sent to @number', array('@number' => $data['number']))
+      );
+    }
+  }
+  else {
+    $result = array(
+      'status' => FALSE,
+      'data' => t('The twilio library was not loaded properly')
+    );
+  }
+  return $result;
+}
+
+/**
+ * Callback for incoming messages.
+ */
+function twilio_receive_message() {
+  $number = str_replace('+1', '', $_REQUEST['From']);
+  $message = check_plain($_REQUEST['Body']);
+  $options = array();
+  if (array_key_exists('To', $_REQUEST) && !empty($_REQUEST['To'])) {
+    $options['receiver'] = $_REQUEST['To'];
+  }
+  $log_message = 'An SMS message was sent from ' . $number . ' containing the message "' . $message . '"';
+  watchdog('Twilio', $log_message);
+  twilio_sms_incoming($number, $message, $options);
+}
+
+/**
+ * Invokes twilio_sms_incoming hook.
+ *
+ * @param string $number
+ *   The sender's mobile number.
+ *
+ * @param string $message
+ *   The content of the text message.
+ */
+function twilio_sms_incoming($number, $message, $options = array()) {
+  // Invoke a hook for the incoming message so other modules can do things with it.
+  module_invoke_all('twilio_sms_incoming', $number, $message, $options);
+}
+
+
+/**
+ * Callback for incoming voice calls.
+ */
+function twilio_receive_voice() {
+  module_invoke_all('twilio_voice_incoming');
+}
+
+/**
+ * Implements hook_user_load().
+ */
+function twilio_user_load($users) {
+  $result = db_select('twilio_user', 'u')
+    ->fields('u', array('uid', 'number', 'status', 'code'))
+    ->condition('uid', array_keys($users), 'IN')
+    ->execute();
+  foreach ($result as $record) {
+    if (!empty($record->uid)) {
+      $users[$record->uid]->twilio_user = (array) $record;
+    }
+  }
+}
+
+/**
+ * Implements hook_user_insert().
+ */
+function twilio_user_insert(&$edit, $account, $category) {
+  twilio_user_save(&$edit, $account, $category);
+}
+
+/**
+ * Implements hook_user_update().
+ */
+function twilio_user_update(&$edit, $account, $category) {
+  twilio_user_save(&$edit, $account, $category);
+}
+
+/**
+ * Implements hook_user_delete().
+ */
+function twilio_user_delete($account) {
+  db_delete('twilio_user')
+    ->condition('uid', $account->uid)
+    ->execute();
+}
+
+/**
+ * Saves mobile number data to the twilio_user table in the database.
+ */
+function twilio_user_save(&$edit, $account, $category) {
+  if (($category == 'twilio') && isset($edit['twilio'])) {
+    $number = (object) $edit['twilio'];
+    $number->uid = $account->uid;
+
+    $primary_keys = array();
+    if (isset($account->twilio_user['status'])) {
+      if ($account->twilio_user['status'] == TWILIO_USER_PENDING && $edit['twilio']['status'] == TWILIO_USER_CONFIRMED) {
+        $primary_keys = array('uid');
+      }
+    }
+    drupal_write_record('twilio_user', $number, $primary_keys);
+
+    $edit['twilio']['number'] = NULL;
+    $edit['twilio']['status'] = NULL;
+    $edit['twilio']['code'] = NULL;
+  }
+}
+
+/**
+ * Checks if a given phone number already exists in the database.
+ *
+ * @param string $number
+ *   The sender's mobile number.
+ *
+ * @result boolean
+ *   TRUE if it exists, FALSE otherwise
+ */
+function twilio_verify_duplicate_number($number) {
+  $result = db_select('twilio_user', 't')
+    ->fields('t')
+    ->condition('t.number', $number)
+    ->execute()
+    ->fetchAssoc();
+  if ($result['number'] == $number) {
+    return TRUE;
+  }
+  return FALSE;
+}
+
+/**
+ * Implements hook_FORMID_form_alter().
+ */
+function twilio_form_user_register_form_alter(&$form, &$form_state, $form_id) {
+  if (variable_get('twilio_registration_form', 0)) {
+    $required = FALSE;
+    if (variable_get('twilio_registration_form', 0) == 2) {
+      $required = TRUE;
+    }
+    $form['account']['number'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Phone number'),
+      '#required' => $required,
+    );
+    $form['#validate'][] = 'twilio_register_validate';
+    $form['#submit'][] = 'twilio_register_submit';
+  }
+}
+
+/**
+ * Custom validation function for phone numbers during registration.
+ */
+function twilio_register_validate($form, &$form_state) {
+  if (!twilio_validate_number($form_state['values']['number'])) {
+    form_set_error('number', t('You must enter a valid 10 digit phone number'));
+  }
+  elseif (twilio_verify_duplicate_number($form_state['values']['number'])) {
+    form_set_error('number', t('This number is already in use and cannot be assigned to more than one account'));
+  }
+}
+
+/**
+ * Custom submit handler for phone numbers during registration.
+ */
+function twilio_register_submit($form, &$form_state) {
+  $account = user_load($form_state['values']['uid']);
+  twilio_user_send_confirmation($account, $form_state['values']['number']);
+}
+
+/**
+ * Send confirmation message.
+ *
+ * @param object $account
+ *   The user object of the account to message
+ *
+ * @param string $number
+ *   The phone number to send the message to
+ *
+ * @todo Please document this function.
+ * @see http://drupal.org/node/1354
+ */
+function twilio_user_send_confirmation($account, $number) {
+  $code = rand(1000, 9999);
+  $data = array(
+    'uid' => $account->uid,
+    'number' => $number,
+    'status' => TWILIO_USER_PENDING,
+    'code' => $code,
+  );
+
+  $account = user_save($account, array('twilio' => $data), 'twilio');
+  $message = "Confirmation code: $code";
+  twilio_send($number, $message);
+  return $account;
+}
+
+/**
+ * Implements hook_rules_action_info() on behalf of the user module.
+ */
+function twilio_rules_action_info() {
+  $defaults = array(
+   'parameter' => array(
+      'account' => array(
+        'type' => 'user',
+        'label' => t('User'),
+        'save' => TRUE,
+      ),
+      'message' => array(
+        'type' => 'text',
+        'label' => t('Message'),
+      ),
+    ),
+    'group' => t('User'),
+    //'access callback' => 'rules_user_integration_access',
+  );
+  $actions['user_send_sms'] = $defaults + array(
+    'label' => t('Send an SMS'),
+    'base' => 'rules_action_user_send_sms',
+  );
+  return $actions;
+}
+
+/**
+ * Action: Send an SMS to a user.
+ */
+function rules_action_user_send_sms($account, $message) {
+  if (!empty($account->twilio_user['number']) && $account->twilio_user['status'] == 2) {
+    twilio_send($account->twilio_user['number'], $message);
+  }
+}

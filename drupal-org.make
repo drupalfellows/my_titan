@@ -69,10 +69,19 @@ projects[wysiwyg][version] = 2.2
 projects[auto_nodetitle][subdir] = contrib
 projects[auto_nodetitle][version] = 1.0
 
+projects[views][subdir] = contrib
+projects[views][version] = 3.5
+
+projects[libraries][subdir] = contrib
+projects[libraries][version] = 2.0
+
+projects[fullcalendar][subdir] = contrib
+projects[fullcalendar][version] = 2.0
+
+
 ; THEMES
 
 ; LIBRARIES
-
 libraries[ckeditor][download][type] = "get"
 libraries[ckeditor][download][url] = "http://download.cksource.com/CKEditor/CKEditor/CKEditor%203.6.3/ckeditor_3.6.3.zip"
 libraries[ckeditor][directory_name] = "ckeditor"

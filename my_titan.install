@@ -56,12 +56,19 @@ function my_titan_install() {
     'field_ui',
     'taxonomy',
     'auto_nodetitle',
+    'views',
+    'views_ui',
+    'fullcalendar',
+    'fullcalendar_options',
+    'libraries',
 
     // Custom modules.
     'custom_config',
+    'twilio',
 
     // Features modules.
     'mt_flashcard',
+    'mt_alarms',
     )
   );
 }
