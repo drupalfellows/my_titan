@@ -1,0 +1,198 @@
+<?php
+/**
+ * @file
+ * A module that provides the ability to check user alarms.
+ */
+
+/**
+ * Implements hook_help.
+ *
+ * Displays help and module information.
+ *
+ * @param path
+ *   Which path of the site we're using to display help
+ * @param arg
+ *   Array that holds the current path as returned from arg() function
+ */
+function check_alarms_help($path, $arg)
+{
+    switch ($path)
+    {
+        case "admin/help#check_alarms":
+            return '<p>'
+                 . t('Provides the ability to check user alarms.') . '</p>';
+            break;
+    }
+}
+
+/**
+ * Implements hook_menu().
+ *
+ * Makes it appear in the navigation menu.
+ */
+function check_alarms_menu()
+{
+    $items['check_alarms'] = array(
+
+        // 'title' and 'description' attributes are automatically translated;
+        // don't put t() on those string literals.
+        'title' => 'Check user alarms',
+        'description' => 'Check user alarms',
+
+        // What to call when the link is requested.
+        'page callback' => 'drupal_get_form',
+
+        // Values passed to the 'page callback' function
+        // (in this case, drupal_get_form())
+        // 'check_alarms_form' will be the form ID and the name of the
+        // function that will create the settings form.
+        'page arguments' => array('check_alarms_form'),
+
+        // Access callback: TRUE if user can access.
+        'access callback' => TRUE,
+    );
+
+    return $items;
+}
+
+/**
+ * Implements hook_form().
+ *
+ * This generates the number and message fields, and the submit button.
+ */
+function check_alarms_form($form, &$form_state)
+{
+    // Form name (can then use the name as a variable)
+    
+    // Submit button.
+    $form['submit'] = array(
+        '#type' => 'submit',
+        '#value' => t('Check alarms'),
+    );
+
+    return $form;
+}
+
+/**
+ * Implements hook_form_submit().
+ *
+ * This is linked to hook_form(), and is automatically called once the "Check
+ * alarms" button is clicked.
+ * This will send a text to the current user, if the button was clicked at the
+ * time 
+ */
+function check_alarms_form_submit($form, &$form_state)
+{
+    // Get the nids of the alarms that users have set.
+    // (can't view the fields just by using db_select; must get nids, then call
+    // node_load() on the nids)
+    $query = db_select('node', 'al')
+
+        ->fields('al', array('uid', 'nid'))
+
+        // Must be an alarm content type.
+        ->condition('type', 'alarm')
+
+        ->execute();
+
+    // Initialize an array of dates and times for each of the user's alarms.
+    $seen_uids = array();
+
+    // For each nid found, record their times.
+    foreach ($query as $a_row)
+    {
+        // If we've already texted this user this session, don't text the same
+        // user again.
+        if (array_key_exists($a_row->uid, $seen_uids))
+            continue;
+
+        // Load the Alarm node from the query row.
+        $a_node = node_load($a_row->nid);
+
+        // Use field_get_items() to get the field_time field.
+        // A difference here is that the 
+        // The return value of field_get_items() is still an array, but its
+        // sole element is another array that contains the time, time zone, and 
+        // the database time zone.
+        $alarm_date_outer = field_get_items('node', $a_node, 'field_time');
+
+        // $alarm_date['value'] is in the format YYYY-MM-DD HH:MM:SS. The date
+        // itself is converted to UTC, regardless of 
+        // $alarm_date['timezone'] and $alarm_date['timezone_db'] specify a time
+        // zone string, in a format compatible with PHP's DateTimeZone class.
+        $alarm_date = $alarm_date_outer[0];
+
+        drupal_set_message(t('Alarm time (full): %alarm',
+                           array('%alarm' => print_r($alarm_date, TRUE))));
+
+        // Use PHP's date_create() function to create a DateTime object.
+        // $alarm_date['timezone_db'], whose value is always 'UTC', will tell
+        // date_create() to consider the raw date and time in
+        // $alarm_date['value'](w/o time zone) as being UTC.
+        // $alarm_date['value'] and $local_date->date currently contain the same
+        // value.
+        $local_date = date_create(
+                      $alarm_date['value'] . ' ' . $alarm_date['timezone_db']);
+
+        // Use PHP's date_timezone_set() function to convert $local_date into
+        // the user's local time zone.
+        // $local_date->date and $alarm_date['value'] now contain different
+        // values if and only if the current user is not in UTC area.
+        $u_query = db_select('users', 'u')
+            ->fields('u', array('timezone'))
+            ->condition('uid', $a_row->uid)
+            ->execute();
+
+        // Only 1 timezone per user, so it should be fine to use fetchAssoc()
+        // on the query (which only returns a single row as a 1-element
+        // array, key being 'timezone' and value being the timezone string) 
+        $u_array = $u_query->fetchAssoc('timezone');
+        $u_tz = $u_array['timezone'];
+
+        $local_date = date_timezone_set($local_date, timezone_open($u_tz));
+
+        // strtotime() (a PHP function) converts a date/time string into a
+        // timestamp format, but assumes that the passed-in string is in the
+        // site's local time zone.
+        // For example, a Toronto-based time string (without specifying time
+        // zone), would be converted to a timestamp, but 5 hours ahead of
+        // the original time string (b/c Toronto time is 5 hours behind UTC)
+        // $local_date->date is accessed w/ date_format().
+        $timestamp_alarm = strtotime(date_format($local_date, 'Y-m-d H:i:s'));
+        drupal_set_message(t('Alarm timestamp (UTC): %alarm',
+                    array('%alarm' => print_r($timestamp_alarm, TRUE))));
+
+        // time() gets a timestamp corresponding to the current time.
+        // It's always UTC.
+        $timestamp_now = time();
+        drupal_set_message(t('Request timestamp (UTC): %tnow',
+                             array('%tnow' => $timestamp_now)));
+
+        // Compare $timestamp_now and $timestamp_alarm.
+        // Don't send a text if the alarm time isn't within 5 minutes of now.
+        if (abs($timestamp_now - $timestamp_alarm) > 60 * 5)
+            continue;
+       
+        // Get the user's cell number.
+        $t_query = db_select('twilio_user', 'u')
+            ->fields('u', array('number'))
+            ->condition('uid', $a_row->uid)
+            ->execute();
+
+        $t_array = $t_query->fetchAssoc('number');
+        $number = $t_array['number'];
+
+        // No number? Skip.
+        if ($number == NULL)
+            continue;
+
+        // Send the text.
+        // For now, to verify that the text is being sent for the correct alarm,
+        // append the alarm timestamp.
+        twilio_send($number,
+            'THIS IS AN ALARM; timestamp ' . $timestamp_alarm);
+
+        // Remember that we've already texted this user this session.
+        $seen_uids[$a_row->uid] = TRUE;
+    }
+}

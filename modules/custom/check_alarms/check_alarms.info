@@ -1,0 +1,5 @@
+name = Check Alarms
+description = Provides the ability to check user alarms.
+core = 7.x
+dependencies[] = twilio
+dependencies[] = mt_alarms
