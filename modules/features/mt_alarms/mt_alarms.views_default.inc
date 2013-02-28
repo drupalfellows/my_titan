@@ -31,6 +31,8 @@ function mt_alarms_views_default_views() {
   $handler->display->display_options['pager']['type'] = 'none';
   $handler->display->display_options['style_plugin'] = 'fullcalendar';
   $handler->display->display_options['style_options']['defaultView'] = 'agendaWeek';
+  $handler->display->display_options['style_options']['fields']['title_field'] = 'field_occasion';
+  $handler->display->display_options['style_options']['fields']['title'] = TRUE;
   $handler->display->display_options['style_options']['fullcalendar_options']['defaultEventMinutes'] = 60;
   $handler->display->display_options['style_options']['fullcalendar_options']['allDaySlot'] = FALSE;
   /* Header: Global: Unfiltered text */
@@ -42,13 +44,6 @@ function mt_alarms_views_default_views() {
   $handler->display->display_options['relationships']['uid']['id'] = 'uid';
   $handler->display->display_options['relationships']['uid']['table'] = 'node';
   $handler->display->display_options['relationships']['uid']['field'] = 'uid';
-  /* Field: Content: Title */
-  $handler->display->display_options['fields']['title']['id'] = 'title';
-  $handler->display->display_options['fields']['title']['table'] = 'node';
-  $handler->display->display_options['fields']['title']['field'] = 'title';
-  $handler->display->display_options['fields']['title']['label'] = '';
-  $handler->display->display_options['fields']['title']['alter']['word_boundary'] = FALSE;
-  $handler->display->display_options['fields']['title']['alter']['ellipsis'] = FALSE;
   /* Field: Content: Time */
   $handler->display->display_options['fields']['field_time']['id'] = 'field_time';
   $handler->display->display_options['fields']['field_time']['table'] = 'field_data_field_time';
@@ -62,6 +57,10 @@ function mt_alarms_views_default_views() {
     'show_repeat_rule' => 'show',
   );
   $handler->display->display_options['fields']['field_time']['delta_offset'] = '0';
+  /* Field: Content: Occasion */
+  $handler->display->display_options['fields']['field_occasion']['id'] = 'field_occasion';
+  $handler->display->display_options['fields']['field_occasion']['table'] = 'field_data_field_occasion';
+  $handler->display->display_options['fields']['field_occasion']['field'] = 'field_occasion';
   /* Sort criterion: Content: Post date */
   $handler->display->display_options['sorts']['created']['id'] = 'created';
   $handler->display->display_options['sorts']['created']['table'] = 'node';
@@ -103,6 +102,7 @@ function mt_alarms_views_default_views() {
     t('To add more alarms, go <a href="node/add/alarm">here</a>.'),
     t('author'),
     t('Time'),
+    t('Occasion'),
     t('Page'),
   );
   $export['my_alarm_schedule'] = $view;

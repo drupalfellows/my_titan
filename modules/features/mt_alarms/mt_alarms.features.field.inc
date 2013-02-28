@@ -79,6 +79,72 @@ function mt_alarms_field_default_fields() {
     ),
   );
 
+  // Exported field: 'node-alarm-field_sent'.
+  $fields['node-alarm-field_sent'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_sent',
+      'foreign keys' => array(),
+      'indexes' => array(),
+      'locked' => '0',
+      'module' => 'number',
+      'settings' => array(),
+      'translatable' => '0',
+      'type' => 'number_integer',
+    ),
+    'field_instance' => array(
+      'bundle' => 'alarm',
+      'default_value' => array(
+        0 => array(
+          'value' => '0',
+        ),
+      ),
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'number',
+          'settings' => array(
+            'decimal_separator' => '.',
+            'prefix_suffix' => TRUE,
+            'scale' => 0,
+            'thousand_separator' => ' ',
+          ),
+          'type' => 'number_integer',
+          'weight' => 2,
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_sent',
+      'label' => 'Sent',
+      'required' => 1,
+      'settings' => array(
+        'max' => '1',
+        'min' => '0',
+        'prefix' => '',
+        'suffix' => '',
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 0,
+        'module' => 'number',
+        'settings' => array(),
+        'type' => 'number',
+        'weight' => '4',
+      ),
+    ),
+  );
+
   // Exported field: 'node-alarm-field_time'.
   $fields['node-alarm-field_time'] = array(
     'field_config' => array(
@@ -169,6 +235,7 @@ function mt_alarms_field_default_fields() {
   // Included for use with string extractors like potx.
   t('Is there anything special about this alarm?');
   t('Occasion');
+  t('Sent');
   t('Time');
 
   return $fields;
