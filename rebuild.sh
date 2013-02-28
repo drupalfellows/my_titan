@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # This file is only meant to be used after switching branches.
 # It backups all the projects that were previously downloaded from the make file and then downloads again, in case something is new, removed or updated.
 # The purpose of the backup is to make sure that we don't kill the user's dev environment in case of a broken internet connection or accidentally running of the script.
