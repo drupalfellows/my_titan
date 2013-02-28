@@ -65,6 +65,7 @@ function my_titan_install() {
     // Custom modules.
     'custom_config',
     'twilio',
+    'check_alarms',
 
     // Features modules.
     'mt_flashcard',
