@@ -95,19 +95,15 @@ function check_alarms_form_submit($form, &$form_state)
 
         ->execute();
 
-    // Initialize an array of dates and times for each of the user's alarms.
-    $seen_uids = array();
-
     // For each nid found, record their times.
     foreach ($query as $a_row)
     {
-        // If we've already texted this user this session, don't text the same
-        // user again.
-        if (array_key_exists($a_row->uid, $seen_uids))
-            continue;
-
         // Load the Alarm node from the query row.
         $a_node = node_load($a_row->nid);
+
+        // Skip this alarm if it has already been sent.
+        $sent_lang = field_language('node', $a_node, 'field_sent');
+        if ($a_node->field_sent[$sent_lang][0]['value']) continue;
 
         // Use field_get_items() to get the field_time field.
         // A difference here is that the 
@@ -192,7 +188,10 @@ function check_alarms_form_submit($form, &$form_state)
         twilio_send($number,
             'THIS IS AN ALARM; timestamp ' . $timestamp_alarm);
 
-        // Remember that we've already texted this user this session.
-        $seen_uids[$a_row->uid] = TRUE;
+        /* Set the field_sent flag on the alarm so that we don't send multiple
+         * copies of the same node
+         */
+        $a_node->field_sent[$sent_lang][0]['value'] = 1;
+        node_save($a_node);
     }
 }
