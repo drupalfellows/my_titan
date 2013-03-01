@@ -31,6 +31,9 @@ projects[diff][version] = 2.0
 projects[email][subdir] = contrib
 projects[email][version] = 1.2
 
+projects[elysia_cron][subdir] = contrib
+projects[elysia_cron][version] = 2.1
+
 projects[entity][subdir] = contrib
 projects[entity][version] = 1.0
 
@@ -58,7 +61,7 @@ projects[strongarm][subdir] = contrib
 projects[strongarm][version] = 2.0
 
 projects[token][subdir] = contrib
-projects[token][version] = 1.4
+projects[token][version] = 1.5
 
 projects[variable][subdir] = contrib
 projects[variable][version] = 2.2

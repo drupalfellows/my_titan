@@ -34,6 +34,8 @@ function my_titan_install() {
     'date',
     'date_api',
     'date_popup',
+    'date_repeat_field',
+    'date_tools',
     'dblog',
     'email',
     'entity',
@@ -61,6 +63,7 @@ function my_titan_install() {
     'fullcalendar',
     'fullcalendar_options',
     'libraries',
+    'elysia_cron',
 
     // Custom modules.
     'custom_config',

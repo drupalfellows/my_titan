@@ -4,6 +4,16 @@
  * A module that provides the ability to check user alarms.
  */
 
+/* The hook used to add cron functionality to the check_alarms module */
+function check_alarms_cronapi($op, $job = NULL) {
+    $items['Send out alarms'] = array(
+        'description' => 'Check for and send alarms',
+        'rule'        => '* * * * *', // every minute,
+        'callback'    => 'check_alarms',
+    );
+    return $items;
+}
+
 /**
  * Implements hook_help.
  *
@@ -83,6 +93,14 @@ function check_alarms_form($form, &$form_state)
  */
 function check_alarms_form_submit($form, &$form_state)
 {
+    // Just call the check_alarms function
+    check_alarms();
+}
+
+/* Checks all alarms to see if any are pending. If any are, they are sent to
+ * the author of the alarm.
+ */
+function check_alarms() {
     // Get the nids of the alarms that users have set.
     // (can't view the fields just by using db_select; must get nids, then call
     // node_load() on the nids)
