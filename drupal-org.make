@@ -88,3 +88,7 @@ projects[fullcalendar][version] = 2.0
 libraries[ckeditor][download][type] = "get"
 libraries[ckeditor][download][url] = "http://download.cksource.com/CKEditor/CKEditor/CKEditor%203.6.3/ckeditor_3.6.3.zip"
 libraries[ckeditor][directory_name] = "ckeditor"
+
+libraries[twilio][download][type] = "get"
+libraries[twilio][download][url] = "https://github.com/twilio/twilio-php/archive/3.10.0.zip"
+libraries[twilio][directory_name] = "twilio"
