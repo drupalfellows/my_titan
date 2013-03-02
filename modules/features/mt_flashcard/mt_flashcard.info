@@ -19,7 +19,6 @@ features[field][] = node-flashcard-field_subject
 features[node][] = flashcard
 features[taxonomy][] = difficulty
 features[taxonomy][] = subject
-features[user_role][] = Content Editor
 features[variable][] = ant_flashcard
 features[variable][] = ant_pattern_flashcard
 features[variable][] = ant_php_flashcard
