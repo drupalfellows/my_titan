@@ -200,11 +200,21 @@ function check_alarms() {
         if ($number == NULL)
             continue;
 
+        // Fetch a random question
+        $card_query = new EntityFieldQuery;
+        $cards = $card_query
+            ->entityCondition('entity_type', 'node', '=')
+            ->entityCondition('bundle', 'flashcard', '=')
+            ->execute();
+
+        $nid = array_rand($cards['node']);
+        $flashcard = node_load($nid);
+        $text = $flashcard->field_question;
+
         // Send the text.
         // For now, to verify that the text is being sent for the correct alarm,
         // append the alarm timestamp.
-        twilio_send($number,
-            'THIS IS AN ALARM; timestamp ' . $timestamp_alarm);
+        twilio_send($number, $text);
 
         /* Set the field_sent flag on the alarm so that we don't send multiple
          * copies of the same node
