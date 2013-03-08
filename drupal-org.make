@@ -81,6 +81,12 @@ projects[libraries][version] = 2.0
 projects[fullcalendar][subdir] = contrib
 projects[fullcalendar][version] = 2.0
 
+projects[timefield][subdir] = contrib
+projects[timefield][version] = 1.0
+
+projects[entityreference][subdir] = contrib
+projects[entityreference][version] = 1.0
+
 
 ; THEMES
 

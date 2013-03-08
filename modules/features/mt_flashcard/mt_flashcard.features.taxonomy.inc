@@ -21,7 +21,7 @@ function mt_flashcard_taxonomy_default_vocabularies() {
       'name' => 'Subject',
       'machine_name' => 'subject',
       'description' => 'The subject that a question falls under',
-      'hierarchy' => '1',
+      'hierarchy' => '0',
       'module' => 'taxonomy',
       'weight' => '-10',
     ),

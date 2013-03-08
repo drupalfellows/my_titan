@@ -290,13 +290,165 @@ function mt_flashcard_field_default_fields() {
     ),
   );
 
+  // Exported field: 'taxonomy_term-difficulty-field_difficulty_image'.
+  $fields['taxonomy_term-difficulty-field_difficulty_image'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_difficulty_image',
+      'foreign keys' => array(
+        'fid' => array(
+          'columns' => array(
+            'fid' => 'fid',
+          ),
+          'table' => 'file_managed',
+        ),
+      ),
+      'indexes' => array(
+        'fid' => array(
+          0 => 'fid',
+        ),
+      ),
+      'locked' => '0',
+      'module' => 'image',
+      'settings' => array(
+        'default_image' => '3',
+        'uri_scheme' => 'public',
+      ),
+      'translatable' => '0',
+      'type' => 'image',
+    ),
+    'field_instance' => array(
+      'bundle' => 'difficulty',
+      'deleted' => '0',
+      'description' => 'The image to be displayed next to the difficulty.',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'image',
+          'settings' => array(
+            'image_link' => '',
+            'image_style' => 'thumbnail',
+          ),
+          'type' => 'image',
+          'weight' => '0',
+        ),
+      ),
+      'entity_type' => 'taxonomy_term',
+      'field_name' => 'field_difficulty_image',
+      'label' => 'Difficulty Image',
+      'required' => 0,
+      'settings' => array(
+        'alt_field' => 0,
+        'default_image' => 0,
+        'file_directory' => '',
+        'file_extensions' => 'png gif jpg jpeg',
+        'max_filesize' => '',
+        'max_resolution' => '',
+        'min_resolution' => '',
+        'title_field' => 0,
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'image',
+        'settings' => array(
+          'preview_image_style' => 'thumbnail',
+          'progress_indicator' => 'throbber',
+        ),
+        'type' => 'image_image',
+        'weight' => '31',
+      ),
+    ),
+  );
+
+  // Exported field: 'taxonomy_term-subject-field_subject_icon'.
+  $fields['taxonomy_term-subject-field_subject_icon'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_subject_icon',
+      'foreign keys' => array(
+        'fid' => array(
+          'columns' => array(
+            'fid' => 'fid',
+          ),
+          'table' => 'file_managed',
+        ),
+      ),
+      'indexes' => array(
+        'fid' => array(
+          0 => 'fid',
+        ),
+      ),
+      'locked' => '0',
+      'module' => 'image',
+      'settings' => array(
+        'default_image' => '1',
+        'uri_scheme' => 'public',
+      ),
+      'translatable' => '0',
+      'type' => 'image',
+    ),
+    'field_instance' => array(
+      'bundle' => 'subject',
+      'deleted' => '0',
+      'description' => 'The icon that will be displayed next to the subject.',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'image',
+          'settings' => array(
+            'image_link' => '',
+            'image_style' => 'thumbnail',
+          ),
+          'type' => 'image',
+          'weight' => '0',
+        ),
+      ),
+      'entity_type' => 'taxonomy_term',
+      'field_name' => 'field_subject_icon',
+      'label' => 'Subject Icon',
+      'required' => 0,
+      'settings' => array(
+        'alt_field' => 0,
+        'default_image' => 0,
+        'file_directory' => '',
+        'file_extensions' => 'png gif jpg jpeg',
+        'max_filesize' => '',
+        'max_resolution' => '',
+        'min_resolution' => '',
+        'title_field' => 0,
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'image',
+        'settings' => array(
+          'preview_image_style' => 'thumbnail',
+          'progress_indicator' => 'throbber',
+        ),
+        'type' => 'image_image',
+        'weight' => '31',
+      ),
+    ),
+  );
+
   // Translatables
   // Included for use with string extractors like potx.
   t('Answer');
   t('Difficulty');
+  t('Difficulty Image');
   t('Question');
   t('Subject');
+  t('Subject Icon');
   t('The answer to the question.');
+  t('The icon that will be displayed next to the subject.');
+  t('The image to be displayed next to the difficulty.');
   t('The question to be answered.');
 
   return $fields;

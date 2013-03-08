@@ -34,7 +34,6 @@ function my_titan_install() {
     'date',
     'date_api',
     'date_popup',
-    'date_repeat_field',
     'date_tools',
     'dblog',
     'email',
@@ -60,10 +59,12 @@ function my_titan_install() {
     'auto_nodetitle',
     'views',
     'views_ui',
-    'fullcalendar',
+    'fullcalendar',          // Needed to display upcoming alarms nicely
     'fullcalendar_options',
-    'libraries',
-    'elysia_cron',
+    'libraries',             // Needed for Arvin's Twilio module
+    'elysia_cron',           // Allows for very frequent cron jobs
+    'timefield',             // Adds a time field, for the alarms
+    'entityreference',       // Adds the ability to create entity reference fields
 
     // Custom modules.
     'custom_config',
@@ -84,3 +85,9 @@ function my_titan_update_1(&$sandbox) {
   module_enable(array('mt_alarms', 'twilio', 'check_alarms'));
 }
 
+/**
+ * Enables the 'entityreference' and 'timefield' modules.
+ */
+function my_titan_update_2(&$sandbox) {
+  module_enable(array('timefield', 'entityreference'));
+}
