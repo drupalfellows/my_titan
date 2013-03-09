@@ -10,6 +10,88 @@
 function mt_alarm_settings_field_default_fields() {
   $fields = array();
 
+  // Exported field: 'node-alarm_setting-field_associated_alarms'.
+  $fields['node-alarm_setting-field_associated_alarms'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '-1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_associated_alarms',
+      'foreign keys' => array(
+        'node' => array(
+          'columns' => array(
+            'target_id' => 'nid',
+          ),
+          'table' => 'node',
+        ),
+      ),
+      'indexes' => array(
+        'target_id' => array(
+          0 => 'target_id',
+        ),
+      ),
+      'locked' => '0',
+      'module' => 'entityreference',
+      'settings' => array(
+        'handler' => 'base',
+        'handler_settings' => array(
+          'behaviors' => array(
+            'views-select-list' => array(
+              'status' => 0,
+            ),
+          ),
+          'sort' => array(
+            'type' => 'none',
+          ),
+          'target_bundles' => array(
+            'alarm' => 'alarm',
+          ),
+        ),
+        'target_type' => 'node',
+      ),
+      'translatable' => '0',
+      'type' => 'entityreference',
+    ),
+    'field_instance' => array(
+      'bundle' => 'alarm_setting',
+      'default_value' => NULL,
+      'deleted' => '0',
+      'description' => 'The alarms created by this alarm setting.',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'entityreference',
+          'settings' => array(
+            'link' => FALSE,
+          ),
+          'type' => 'entityreference_label',
+          'weight' => 8,
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_associated_alarms',
+      'label' => 'Associated Alarms',
+      'required' => 0,
+      'settings' => array(
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'options',
+        'settings' => array(),
+        'type' => 'options_buttons',
+        'weight' => '39',
+      ),
+    ),
+  );
+
   // Exported field: 'node-alarm_setting-field_enabled'.
   $fields['node-alarm_setting-field_enabled'] = array(
     'field_config' => array(
@@ -449,11 +531,13 @@ function mt_alarm_settings_field_default_fields() {
 
   // Translatables
   // Included for use with string extractors like potx.
+  t('Associated Alarms');
   t('Difficulty');
   t('Enabled');
   t('Occasion');
   t('Repeats');
   t('Subject');
+  t('The alarms created by this alarm setting.');
   t('The difficulty of the question asked of the user.');
   t('The reason for this alarm.');
   t('The subject the user will be tested on.');

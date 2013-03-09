@@ -270,5 +270,110 @@ function check_alarms() {
 }
 
 function create_alarms() {
+    // Get an array of all of the enabled alarm schedules.
+    $alarm_setting_query = new EntityFieldQuery;
+    $alarm_settings = $alarm_setting_query
+        ->entityCondition('entity_type', 'node', '=')
+        ->entityCondition('bundle', 'alarm_setting', '=')
+        ->propertyCondition('status', NODE_PUBLISHED, '=')
+        ->fieldCondition('field_enabled', 'value', 1, '=')
+        ->fieldCondition('field_repeats', 'value', 1, '=')
+        ->execute();
+
+    // Get the current date and time as a DateTime object. This object tracks
+    // all of the annoying stuff like time zones, and makes it easy to add
+    // time intervals to a date.
+    $current_time = new DateTime;
+    // to get the DateTime for next week, just add 7 days
+    // $next_week_time = $current_time->add(new Dateinterval('P7D'));
+    // Get the numeric representation of the day of the week (0=sun, 6=sat)
+    $current_day_of_week = intval(($current_time->format('w')));
     
-}
+    foreach($alarm_settings['node'] as $row) {
+        $set_node = node_load($row->nid);
+        // get the array for the time field of the alarm setting.
+        $set_time_lang = field_language('node', $set_node, 'field_set_time');
+        $set_time = $set_node->field_set_time[$set_time_lang][0];
+
+        // Get the hour and minute of the alarm
+        $hour = $set_time['value'] / 3600;
+        $minute = ($set_time['value'] % 3600) / 60;
+        
+        // load the user into an object
+        $user = user_load($set_node->uid); 
+
+        // Get the days on which the alarm repeats 
+        if($set_time['sun'] == '1') $repeats[] = 0;
+        if($set_time['mon'] == '1') $repeats[] = 1;
+        if($set_time['tue'] == '1') $repeats[] = 2;
+        if($set_time['wed'] == '1') $repeats[] = 3;
+        if($set_time['thu'] == '1') $repeats[] = 4;
+        if($set_time['fri'] == '1') $repeats[] = 5;
+        if($set_time['sat'] == '1') $repeats[] = 6;
+
+        // Now add the alarm for next week corresponding to these days
+        foreach($repeats as $repeat_day_of_week) {
+            // Find the number of days between the repeat occurence and the
+            // current day of the week
+            $day_difference = $repeat_day_of_week - $current_day_of_week;
+
+            // Adjust for the case where the repeat day of the week has already
+            // passed in the current week
+            if ($day_difference < 0) {
+                $day_difference += 7;
+            }
+
+            // Add this day difference to next week's date
+            $repeat_date = clone $current_time;
+            $repeat_date->add(new Dateinterval('P' . $day_difference . 'D'));
+            
+            // Set the timezone
+            $repeat_date->setTimezone(new DateTimeZone($user->timezone));
+
+            // Set the time of the alarm
+            $repeat_date->setTime($hour, $minute);
+
+            // Convert to GMT by adding back the offset.
+            $offset = $repeat_date->getOffset();
+            if($offset >= 0) {
+                $repeat_date->sub(new Dateinterval('PT' . $offset . 'S'));
+            }
+            else {
+                $offset = -$offset;
+                $repeat_date->add(new Dateinterval('PT' . $offset . 'S'));
+            }
+ 
+            // Get the string representing the date, in the format Drupal likes
+            $time_string = $repeat_date->format('Y-m-d H:i:00');
+
+            // Now create the actual alarm node
+            $new_alarm = new stdClass();
+            $new_alarm->type = 'alarm';
+            node_object_prepare($new_alarm);
+            
+            // Add in all the relevant fields
+            $new_alarm->field_occasion = $set_node->field_set_occasion;
+            $new_alarm->field_question_subject = $set_node->field_set_subject;
+            $new_alarm->field_question_difficulty = $set_node->field_set_difficulty;
+            $new_alarm->field_time['und'][0] = array(
+                'value' => $time_string,
+                'timezone' => $user->timezone,
+                'timezone_db' => 'UTC',
+                'date_type' => 'datetime',
+            );
+            $new_alarm->field_sent = '0';
+            $new_alarm->field_answered = '0';
+            $new_alarm->name = $set_node->name;
+            $new_alarm->uid = $set_node->uid;
+            $new_alarm->language = $set_node->language;
+            $new_alarm->status = '1';
+            node_submit($new_alarm);
+            node_save($new_alarm);
+            $set_node->field_associated_alarms['und'][] = array(
+                'target_id' => $new_alarm->nid
+            );
+        }//INNER FOREACH
+        
+        node_save($set_node);
+    }//OUTER FOREACH
+}//create_alarms

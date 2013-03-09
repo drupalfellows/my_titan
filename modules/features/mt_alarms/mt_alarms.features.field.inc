@@ -234,92 +234,6 @@ function mt_alarms_field_default_fields() {
     ),
   );
 
-  // Exported field: 'node-alarm-field_parent_alarm_setting'.
-  $fields['node-alarm-field_parent_alarm_setting'] = array(
-    'field_config' => array(
-      'active' => '1',
-      'cardinality' => '1',
-      'deleted' => '0',
-      'entity_types' => array(),
-      'field_name' => 'field_parent_alarm_setting',
-      'foreign keys' => array(
-        'node' => array(
-          'columns' => array(
-            'target_id' => 'nid',
-          ),
-          'table' => 'node',
-        ),
-      ),
-      'indexes' => array(
-        'target_id' => array(
-          0 => 'target_id',
-        ),
-      ),
-      'locked' => '0',
-      'module' => 'entityreference',
-      'settings' => array(
-        'handler' => 'base',
-        'handler_settings' => array(
-          'behaviors' => array(
-            'views-select-list' => array(
-              'status' => 0,
-            ),
-          ),
-          'sort' => array(
-            'type' => 'none',
-          ),
-          'target_bundles' => array(
-            'alarm_setting' => 'alarm_setting',
-          ),
-        ),
-        'target_type' => 'node',
-      ),
-      'translatable' => '0',
-      'type' => 'entityreference',
-    ),
-    'field_instance' => array(
-      'bundle' => 'alarm',
-      'default_value' => NULL,
-      'deleted' => '0',
-      'description' => 'The alarm setting that created this alarm.',
-      'display' => array(
-        'default' => array(
-          'label' => 'above',
-          'module' => 'entityreference',
-          'settings' => array(
-            'link' => FALSE,
-          ),
-          'type' => 'entityreference_label',
-          'weight' => 6,
-        ),
-        'teaser' => array(
-          'label' => 'above',
-          'settings' => array(),
-          'type' => 'hidden',
-          'weight' => 0,
-        ),
-      ),
-      'entity_type' => 'node',
-      'field_name' => 'field_parent_alarm_setting',
-      'label' => 'Parent Alarm Setting',
-      'required' => 0,
-      'settings' => array(
-        'user_register_form' => FALSE,
-      ),
-      'widget' => array(
-        'active' => 1,
-        'module' => 'entityreference',
-        'settings' => array(
-          'match_operator' => 'CONTAINS',
-          'path' => '',
-          'size' => '60',
-        ),
-        'type' => 'entityreference_autocomplete',
-        'weight' => '7',
-      ),
-    ),
-  );
-
   // Exported field: 'node-alarm-field_question_difficulty'.
   $fields['node-alarm-field_question_difficulty'] = array(
     'field_config' => array(
@@ -632,9 +546,7 @@ function mt_alarms_field_default_fields() {
   t('Difficulty');
   t('Is there anything special about this alarm?');
   t('Occasion');
-  t('Parent Alarm Setting');
   t('Sent');
-  t('The alarm setting that created this alarm.');
   t('The time the alarm will go off at.');
   t('Time');
   t('What flashcard was sent to the user.');

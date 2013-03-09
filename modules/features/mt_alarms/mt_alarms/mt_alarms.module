@@ -1,7 +1,0 @@
-<?php
-/**
- * @file
- * Code for the mt_alarms feature.
- */
-
-include_once 'mt_alarms.features.inc';
