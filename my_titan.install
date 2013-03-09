@@ -112,6 +112,6 @@ function my_titan_update_4(&$sandbox) {
 /**
  * Enables the 'rules' module
  */
-function my_titan_update_4(&$sandbox) {
+function my_titan_update_5(&$sandbox) {
   module_enable(array('rules'));
 }

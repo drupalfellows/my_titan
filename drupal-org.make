@@ -76,7 +76,7 @@ projects[views][subdir] = contrib
 projects[views][version] = 3.5
 
 projects[libraries][subdir] = contrib
-projects[libraries][version] = 2.0
+projects[libraries][version] = 2.1
 
 projects[fullcalendar][subdir] = contrib
 projects[fullcalendar][version] = 2.0
