@@ -10,6 +10,157 @@
 function mt_alarms_field_default_fields() {
   $fields = array();
 
+  // Exported field: 'node-alarm-field_answered'.
+  $fields['node-alarm-field_answered'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_answered',
+      'foreign keys' => array(),
+      'indexes' => array(
+        'value' => array(
+          0 => 'value',
+        ),
+      ),
+      'locked' => '0',
+      'module' => 'list',
+      'settings' => array(
+        'allowed_values' => array(
+          0 => '0',
+          1 => '1',
+        ),
+        'allowed_values_function' => '',
+      ),
+      'translatable' => '0',
+      'type' => 'list_boolean',
+    ),
+    'field_instance' => array(
+      'bundle' => 'alarm',
+      'default_value' => array(
+        0 => array(
+          'value' => 0,
+        ),
+      ),
+      'deleted' => '0',
+      'description' => 'Whether the alarm has been answered or not.',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'list',
+          'settings' => array(),
+          'type' => 'list_default',
+          'weight' => 8,
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_answered',
+      'label' => 'Answered',
+      'required' => 0,
+      'settings' => array(
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'options',
+        'settings' => array(
+          'display_label' => 1,
+        ),
+        'type' => 'options_onoff',
+        'weight' => '6',
+      ),
+    ),
+  );
+
+  // Exported field: 'node-alarm-field_card_sent'.
+  $fields['node-alarm-field_card_sent'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_card_sent',
+      'foreign keys' => array(
+        'node' => array(
+          'columns' => array(
+            'target_id' => 'nid',
+          ),
+          'table' => 'node',
+        ),
+      ),
+      'indexes' => array(
+        'target_id' => array(
+          0 => 'target_id',
+        ),
+      ),
+      'locked' => '0',
+      'module' => 'entityreference',
+      'settings' => array(
+        'handler' => 'base',
+        'handler_settings' => array(
+          'behaviors' => array(
+            'views-select-list' => array(
+              'status' => 0,
+            ),
+          ),
+          'sort' => array(
+            'type' => 'none',
+          ),
+          'target_bundles' => array(
+            'flashcard' => 'flashcard',
+          ),
+        ),
+        'target_type' => 'node',
+      ),
+      'translatable' => '0',
+      'type' => 'entityreference',
+    ),
+    'field_instance' => array(
+      'bundle' => 'alarm',
+      'default_value' => NULL,
+      'deleted' => '0',
+      'description' => 'What flashcard was sent to the user.',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'entityreference',
+          'settings' => array(
+            'link' => FALSE,
+          ),
+          'type' => 'entityreference_label',
+          'weight' => 9,
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_card_sent',
+      'label' => 'Card Sent',
+      'required' => 0,
+      'settings' => array(
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'options',
+        'settings' => array(),
+        'type' => 'options_select',
+        'weight' => '9',
+      ),
+    ),
+  );
+
   // Exported field: 'node-alarm-field_occasion'.
   $fields['node-alarm-field_occasion'] = array(
     'field_config' => array(
@@ -78,7 +229,7 @@ function mt_alarms_field_default_fields() {
           'size' => '60',
         ),
         'type' => 'text_textfield',
-        'weight' => '3',
+        'weight' => '2',
       ),
     ),
   );
@@ -164,7 +315,7 @@ function mt_alarms_field_default_fields() {
           'size' => '60',
         ),
         'type' => 'entityreference_autocomplete',
-        'weight' => '8',
+        'weight' => '7',
       ),
     ),
   );
@@ -239,7 +390,7 @@ function mt_alarms_field_default_fields() {
         'module' => 'options',
         'settings' => array(),
         'type' => 'options_buttons',
-        'weight' => '6',
+        'weight' => '4',
       ),
     ),
   );
@@ -314,7 +465,7 @@ function mt_alarms_field_default_fields() {
         'module' => 'options',
         'settings' => array(),
         'type' => 'options_buttons',
-        'weight' => '5',
+        'weight' => '3',
       ),
     ),
   );
@@ -383,7 +534,7 @@ function mt_alarms_field_default_fields() {
           'display_label' => 1,
         ),
         'type' => 'options_onoff',
-        'weight' => '7',
+        'weight' => '5',
       ),
     ),
   );
@@ -469,13 +620,15 @@ function mt_alarms_field_default_fields() {
           'year_range' => '-0:+3',
         ),
         'type' => 'date_popup',
-        'weight' => '9',
+        'weight' => '8',
       ),
     ),
   );
 
   // Translatables
   // Included for use with string extractors like potx.
+  t('Answered');
+  t('Card Sent');
   t('Difficulty');
   t('Is there anything special about this alarm?');
   t('Occasion');
@@ -484,6 +637,8 @@ function mt_alarms_field_default_fields() {
   t('The alarm setting that created this alarm.');
   t('The time the alarm will go off at.');
   t('Time');
+  t('What flashcard was sent to the user.');
+  t('Whether the alarm has been answered or not.');
   t('Whether the alarm has been sent or not.');
   t('question subject');
 

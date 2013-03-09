@@ -62,18 +62,26 @@ function check_alarms_menu()
         'access callback' => TRUE,
     );
 
+    $items['update_alarms'] = array(
+
+        'title' => 'create alarms.',
+        'description' => 'Create alarms for the next week based on
+                          alarm settings.',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('create_alarms_form'),
+        'access callback' => TRUE,
+    );
+
     return $items;
 }
 
 /**
- * Implements hook_form().
+ * Implements hook_forms().
  *
- * This generates the number and message fields, and the submit button.
+ * This generates the form for checking for and sending pending alarms.
  */
 function check_alarms_form($form, &$form_state)
 {
-    // Form name (can then use the name as a variable)
-    
     // Submit button.
     $form['submit'] = array(
         '#type' => 'submit',
@@ -84,9 +92,25 @@ function check_alarms_form($form, &$form_state)
 }
 
 /**
+ * Implements hook_forms().
+ *
+ * This generates the form needed to create alarms from alarm settings.
+ */
+function create_alarms_form($form, &$form_state)
+{
+    // Submit button.
+    $form['submit'] = array(
+        '#type' => 'submit',
+        '#value' => t('Create alarms'),
+    );
+
+    return $form;
+}
+
+/**
  * Implements hook_form_submit().
  *
- * This is linked to hook_form(), and is automatically called once the "Check
+ * This is linked to hook_forms(), and is automatically called once the "Check
  * alarms" button is clicked.
  * This will send a text to the current user, if the button was clicked at the
  * time 
@@ -95,6 +119,20 @@ function check_alarms_form_submit($form, &$form_state)
 {
     // Just call the check_alarms function
     check_alarms();
+}
+
+/**
+ * Implements hook_form_submit().
+ *
+ * This is linked to hook_forms(), and is automatically called once the "Check
+ * alarms" button is clicked.
+ * This will send a text to the current user, if the button was clicked at the
+ * time 
+ */
+function create_alarms_form_submit($form, &$form_state)
+{
+    // Just call the check_alarms function
+    create_alarms();
 }
 
 /* Checks all alarms to see if any are pending. If any are, they are sent to
@@ -229,4 +267,8 @@ function check_alarms() {
         $a_node->field_sent[$sent_lang][0]['value'] = 1;
         node_save($a_node);
     }
+}
+
+function create_alarms() {
+    
 }
