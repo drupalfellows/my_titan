@@ -11,6 +11,13 @@ function check_alarms_cronapi($op, $job = NULL) {
         'rule'        => '* * * * *', // every minute,
         'callback'    => 'check_alarms',
     );
+
+    $items['Update Alarms'] = array(
+        'description' => 'Checks if for new alarms to be added next week',
+        'rule'        => '0 0 * * *', // Once a day at midnight
+        'callback'    => 'update_alarms',
+    );
+ 
     return $items;
 }
 
@@ -420,7 +427,6 @@ function update_alarms() {
         if($set_time['thu'] == '1') $repeats[] = 4;
         if($set_time['fri'] == '1') $repeats[] = 5;
         if($set_time['sat'] == '1') $repeats[] = 6;
-        dpm($repeats);
 
         // Now add the alarm for next week corresponding to these days
         foreach($repeats as $repeat_day_of_week) {
@@ -431,7 +437,6 @@ function update_alarms() {
             // Adjust for the case where the repeat day of the week has already
             // passed in the current week
             if ($day_difference != 0) {
-                drupal_set_message("Hello World!");
                 continue;
             }
             
