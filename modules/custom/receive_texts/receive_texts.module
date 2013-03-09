@@ -130,7 +130,7 @@ function receive_texts() {
 
       // Disregard all texts sent from more than 5 min ago.
       if (abs(time() - $msg_tstamp) > 60 * 5) {
-        continue;
+        break;
       }
 
       // Which user sent the reply?
