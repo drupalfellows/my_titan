@@ -121,14 +121,15 @@ function receive_texts() {
       // and the date_sent of that exact text was recorded as 2:50 a.m. on
       // Friday.
       $msg_tstamp = strtotime($message->date_sent);
+
       drupal_set_message(t('Inbound message from: ' . $message->from . '; '
                          . 'message body: ' . $message->body . '; '
                          . 'date sent: ' . $message->date_sent . '; '
                          . 'timestamp: '. $msg_tstamp));
       drupal_set_message(t('Current time: ' . time()));
 
-      // Disregard all texts sent from more than a minute ago.
-      if (abs(time() - $msg_tstamp) > 60 * 1) {
+      // Disregard all texts sent from more than 5 min ago.
+      if (abs(time() - $msg_tstamp) > 60 * 5) {
         continue;
       }
 
@@ -176,7 +177,6 @@ function receive_texts() {
         }
 
         // Disregard alarms that have been answered.
-        dpm($alarm);
         $answered_lang = field_language('node', $alarm, 'field_answered');
         if ($alarm->field_answered[$answered_lang][0]['value'] == TRUE) {
           drupal_set_message(t('Alarm already answered'));
@@ -206,6 +206,7 @@ function receive_texts() {
           drupal_set_message(t('Right answer! Setting alarm to answered'));
           $alarm->field_answered[$answered_lang][0]['value'] = TRUE;
           node_save($alarm);
+          twilio_send($number, 'Right answer! Setting alarm to answered');
           break; // Break out of the alarm-checking loop; keep checking SMS.
         } else {
           drupal_set_message(t('Wrong answer!'));
