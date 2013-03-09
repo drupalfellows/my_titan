@@ -90,6 +90,9 @@ projects[entityreference][version] = 1.0
 projects[rules][subdir] = contrib
 projects[rules][version] = 2.2
 
+projects[views_slideshow][subdir] = contrib
+projects[views_slideshow][version] = 3.0
+
 ; THEMES
 projects[adaptivetheme][subdir] = contrib
 projects[adaptivetheme][version] = 3.1
