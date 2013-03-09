@@ -87,6 +87,9 @@ projects[timefield][version] = 1.0
 projects[entityreference][subdir] = contrib
 projects[entityreference][version] = 1.0
 
+projects[rules][subdir] = contrib
+projects[rules][version] = 2.2
+
 ; THEMES
 projects[adaptivetheme][subdir] = contrib
 projects[adaptivetheme][version] = 3.1

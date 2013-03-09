@@ -65,6 +65,7 @@ function my_titan_install() {
     'elysia_cron',           // Allows for very frequent cron jobs
     'timefield',             // Adds a time field, for the alarms
     'entityreference',       // Adds the ability to create entity reference fields
+    'rules',
 
     // Custom modules.
     'custom_config',
@@ -108,4 +109,9 @@ function my_titan_update_4(&$sandbox) {
   module_enable(array('morningbird'));
 }
 
-
+/**
+ * Enables the 'rules' module
+ */
+function my_titan_update_4(&$sandbox) {
+  module_enable(array('rules'));
+}
