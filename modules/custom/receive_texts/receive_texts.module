@@ -1,0 +1,240 @@
+<?php
+/**
+ * @file
+ * A module that provides the ability to check received messages.
+ */
+
+/* The hook used to add cron functionality to the check_alarms module */
+function receive_texts_cronapi($op, $job = NULL) {
+    $items['Receive texts'] = array(
+        'description' => 'Check received texts',
+        'rule'        => '* * * * *', // every minute,
+        'callback'    => 'receive_texts',
+    );
+    return $items;
+}
+
+/**
+ * Implements hook_help.
+ *
+ * Displays help and module information.
+ *
+ * @param path
+ *   Which path of the site we're using to display help
+ * @param arg
+ *   Array that holds the current path as returned from arg() function
+ */
+function receive_texts_help($path, $arg) {
+  switch ($path) {
+  case "admin/help#receive_texts":
+    return '<p>'
+         . t('Provides the ability to receive texts.') . '</p>';
+    break;
+  }
+}
+
+/**
+ * Implements hook_block_info().
+ *
+ * Makes it appear in the block list.
+ */
+function receive_texts_block_info() {
+  $blocks['receive_texts'] = array(
+    'info' => t('Check received texts'),
+    'cache' => DRUPAL_CACHE_PER_ROLE,
+  );
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ *
+ * Show the block for Receive Texts (which is just a button).
+ */
+function receive_texts_block_view($delta = '') {
+  $block = array();
+
+  switch ($delta) {
+  case 'receive_texts':
+    $block['subject'] = t('Check for texts');
+    $block['content'] = drupal_get_form('receive_texts_form');
+    break;
+  }
+
+  return $block;
+}
+
+/**
+ * Implements hook_form().
+ *
+ * This generates the button for checking texts.
+ */
+function receive_texts_form($form, &$form_state) {
+
+  // Submit button.
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Check received texts'),
+  );
+
+  return $form;
+}
+
+/**
+ * Implements hook_form_submit().
+ *
+ * This is linked to hook_form(), and is automatically called once the submit
+ * button is clicked.
+ * This will check for texts.
+ */
+function receive_texts_form_submit($form, &$form_state) {
+  // Just call receive_texts()
+  receive_texts();
+}
+
+/*
+ * Checks the text history.
+ */
+function receive_texts() {
+  // Use straight Twilio API for this one: Arvin's module looks incomplete with
+  // regard to receiving texts.
+
+  if (!($library = libraries_load('twilio')) || empty($library['loaded'])) {
+    drupal_set_message('Couldn\'t load the Twilio library!');
+    return;
+  }
+
+  // Get the account and token.
+  $account_sid = variable_get('twilio_account');
+  $auth_token = variable_get('twilio_token');
+
+  // Instantiate the client based on our account ID and token.
+  $client = new Services_Twilio($account_sid, $auth_token);
+
+  // Loop through all messages in our message list.
+  foreach ($client->account->sms_messages as $message) {
+
+    // Only look at the inbound messages.
+    if ($message->direction == 'inbound') {
+
+      // $message->date_sent is UTC; I sent a text at 9:50 p.m. on Thursday,
+      // and the date_sent of that exact text was recorded as 2:50 a.m. on
+      // Friday.
+      $msg_tstamp = strtotime($message->date_sent);
+      drupal_set_message(t('Inbound message from: ' . $message->from . '; '
+                         . 'message body: ' . $message->body . '; '
+                         . 'date sent: ' . $message->date_sent . '; '
+                         . 'timestamp: '. $msg_tstamp));
+      drupal_set_message(t('Current time: ' . time()));
+
+      // Disregard all texts sent from more than a minute ago.
+      if (abs(time() - $msg_tstamp) > 60 * 1) {
+        continue;
+      }
+
+      // Which user sent the reply?
+      // IMPORTANT: twilio_user stores the phone number without the +, but the
+      // Twilio API returns the number with a + at the beginning.
+      // Remove the first + (for PHP regex, need a delimiter at the beginning
+      // and end of the pattern, like '/').
+      $number = preg_replace('/^\+/', '', $message->from);
+
+      // Get the user ID associated with the number.
+      $msg_user_query = db_select('twilio_user', 'u')
+        ->fields('u', array('uid'))
+        ->condition('number', $number)
+        ->execute();
+      $msg_userId_array = $msg_user_query->fetchAssoc('uid');
+      $uid = $msg_userId_array['uid'];
+
+      drupal_set_message(t('Message was from user ID: ' . $uid));
+
+      // Get all alarm nodes made by this user.
+      $alarmId_query = db_select('node', 'al')
+        ->fields('al', array('nid'))
+        ->condition('uid', $uid)
+        ->condition('type', 'alarm')
+        ->execute();
+      $alarmId_array = $alarmId_query->fetchCol();
+      $alarm_nodes = node_load_multiple($alarmId_array);
+      
+      // Sort alarms based on time of fire, earliest to latest.
+      usort($alarm_nodes, 'receive_texts_alarms_compare');
+
+      // Loop over each alarm.
+      foreach ($alarm_nodes as $alarm) {
+        $time_lang = field_language('node', $alarm, 'field_time');
+
+        //drupal_set_message('Alarm: ' . print_r($alarm, TRUE));
+        drupal_set_message(t('Alarm date: ' . print_r($alarm->field_time[$time_lang][0]['value'], TRUE)));
+
+        // Disregard alarms that haven't already been sent.
+        $sent_lang = field_language('node', $alarm, 'field_sent');
+        if ($alarm->field_sent[$sent_lang][0]['value'] == 0) {
+          drupal_set_message(t('Alarm not sent'));
+          continue;
+        }
+
+        // Disregard alarms that have been answered.
+        $answered_lang = field_language('node', $alarm, 'field_answered');
+        if ($alarm->field_answered[$answered_lang][0]['value'] == TRUE) {
+          drupal_set_message(t('Alarm already answered'));
+          continue;
+        }
+
+        // Now we have our first sent, unanswered alarm.
+
+        $card_sent_lang = field_language('node', $alarm, 'field_card_sent');
+        $flashcard_id = $alarm->field_card_sent[$card_sent_lang][0]['target_id'];
+        drupal_set_message(t('Alarm\'s flashcard ID: ' . print_r($flashcard_id, TRUE)));
+
+        $flashcard = node_load($flashcard_id);
+        //drupal_set_message(t('Flashcard: ' . print_r($flashcard, TRUE)));
+
+        $question_lang = field_language('node', $flashcard, 'field_question');
+        drupal_set_message(t('The question was: ' . $flashcard->field_question[$question_lang][0]['value']));
+
+        $answer_lang = field_language('node', $flashcard, 'field_answer');
+        $answer = $flashcard->field_answer[$answer_lang][0]['value'];
+        drupal_set_message(t('The expected answer was: ' . $answer));
+
+        drupal_set_message(t('The answer was: ' . $message->body));
+
+        // Case-insensitive comparison of the answer.
+        if (strcasecmp($answer, $message->body) == 0) {
+          drupal_set_message(t('Right answer! Setting alarm to answered'));
+          $alarm->field_answered[$answered_lang][0]['value'] = TRUE;
+          node_save($alarm);
+          break; // Break out of the alarm-checking loop; keep checking SMS.
+        } else {
+          drupal_set_message(t('Wrong answer!'));
+        }
+      }   
+    }
+  }
+}
+
+/*
+ * This is a helper comparison function that sorts alarms by the time they
+ * should go off, from earliest to latest.
+ */
+function receive_texts_alarms_compare(stdClass $a, stdClass $b) {
+  $time_lang_a = field_language('node', $a, 'field_time');
+  $time_a = $a->field_time[$time_lang_a][0]['value'];
+  $tstamp_a = strtotime($time_a);
+
+  $time_lang_b = field_language('node', $b, 'field_time');
+  $time_b = $b->field_time[$time_lang_b][0]['value'];
+  $tstamp_b = strtotime($time_b);
+
+  if ($tstamp_a < $tstamp_b) {
+    return -1;
+  }
+  else if ($tstamp_a == $tstamp_b) {
+    return 0;
+  }
+  else if ($tstamp_a > $tstamp_b) {
+    return 1;
+  }
+  return 0;
+}

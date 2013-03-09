@@ -1,0 +1,5 @@
+name = Receive texts
+description = Provides the ability to receive texts.
+core = 7.x
+dependencies[] = twilio
+dependencies[] = mt_alarms
