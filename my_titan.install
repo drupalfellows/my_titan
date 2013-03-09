@@ -92,3 +92,12 @@ function my_titan_update_1(&$sandbox) {
 function my_titan_update_2(&$sandbox) {
   module_enable(array('timefield', 'entityreference'));
 }
+
+/**
+ * Enables the 'receive_texts' custom module
+ */
+function my_titan_update_3(&$sandbox) {
+  module_enable(array('receive_texts'));
+}
+
+

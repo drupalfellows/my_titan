@@ -267,10 +267,10 @@ function check_alarms() {
         // append the alarm timestamp.
         twilio_send($number, $text);
 
-        /* Set the field_sent flag on the alarm so that we don't send multiple
-         * copies of the same node
-         */
+        // Set the field_sent flag on the alarm so that we don't send multiple
+        // copies of the same node
         $a_node->field_sent[$sent_lang][0]['value'] = 1;
+	$a_node->field_card_sent['und'][0]['target_id'] = $nid;
         node_save($a_node);
     }
 }
@@ -363,8 +363,8 @@ function check_alarms_node_presave($node) {
             'timezone_db' => 'UTC',
             'date_type' => 'datetime',
         );
-        $new_alarm->field_sent = '0';
-        $new_alarm->field_answered = '0';
+        $new_alarm->field_sent['und'][0]['value'] = '0';
+        $new_alarm->field_answered['und'][0]['value'] = '0';
         $new_alarm->name = $node->name;
         $new_alarm->uid = $node->uid;
         $new_alarm->language = $node->language;
@@ -477,8 +477,8 @@ function update_alarms() {
                 'timezone_db' => 'UTC',
                 'date_type' => 'datetime',
             );
-            $new_alarm->field_sent = '0';
-            $new_alarm->field_answered = '0';
+            $new_alarm->field_sent['und'][0]['value'] = '0';
+            $new_alarm->field_answered['und'][0]['value'] = '0';
             $new_alarm->name = $set_node->name;
             $new_alarm->uid = $set_node->uid;
             $new_alarm->language = $set_node->language;

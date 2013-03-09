@@ -176,6 +176,7 @@ function receive_texts() {
         }
 
         // Disregard alarms that have been answered.
+        dpm($alarm);
         $answered_lang = field_language('node', $alarm, 'field_answered');
         if ($alarm->field_answered[$answered_lang][0]['value'] == TRUE) {
           drupal_set_message(t('Alarm already answered'));
