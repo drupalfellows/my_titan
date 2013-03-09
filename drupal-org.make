@@ -87,8 +87,9 @@ projects[timefield][version] = 1.0
 projects[entityreference][subdir] = contrib
 projects[entityreference][version] = 1.0
 
-
 ; THEMES
+projects[adaptivetheme][subdir] = contrib
+projects[adaptivetheme][version] = 3.1
 
 ; LIBRARIES
 libraries[ckeditor][download][type] = "get"

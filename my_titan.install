@@ -71,6 +71,7 @@ function my_titan_install() {
     'twilio',
     'check_alarms',
     'receive_texts',
+    'morningbird',
 
     // Features modules.
     'mt_flashcard',
@@ -98,6 +99,13 @@ function my_titan_update_2(&$sandbox) {
  */
 function my_titan_update_3(&$sandbox) {
   module_enable(array('receive_texts'));
+}
+
+/**
+ * Enables the 'morningbird' custom theme
+ */
+function my_titan_update_3(&$sandbox) {
+  module_enable(array('morningbird'));
 }
 
 
