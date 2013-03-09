@@ -104,7 +104,7 @@ function my_titan_update_3(&$sandbox) {
 /**
  * Enables the 'morningbird' custom theme
  */
-function my_titan_update_3(&$sandbox) {
+function my_titan_update_4(&$sandbox) {
   module_enable(array('morningbird'));
 }
 
