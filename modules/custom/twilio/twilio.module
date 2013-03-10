@@ -250,6 +250,7 @@ function twilio_command($command = 'auth', $data = array(), $config = NULL, $acc
  * Callback for incoming messages.
  */
 function twilio_receive_message() {
+  dpm($_REQUEST);
   $number = str_replace('+1', '', $_REQUEST['From']);
   $message = check_plain($_REQUEST['Body']);
   $options = array();
