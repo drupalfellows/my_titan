@@ -250,8 +250,8 @@ function twilio_command($command = 'auth', $data = array(), $config = NULL, $acc
  * Callback for incoming messages.
  */
 function twilio_receive_message() {
-  // Get the date & time that the text was received.
-  $time = new DateTime(NULL, new DateTimeZone('America/Toronto'));
+  // Get the UTC timestamp for when the text was received.
+  $time = time();
 
   $number = str_replace('+1', '', $_REQUEST['From']);
   $message = check_plain($_REQUEST['Body']);

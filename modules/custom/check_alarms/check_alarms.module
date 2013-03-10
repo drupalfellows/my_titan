@@ -149,12 +149,8 @@ function check_alarms() {
     // (can't view the fields just by using db_select; must get nids, then call
     // node_load() on the nids)
     $query = db_select('node', 'al')
-
         ->fields('al', array('uid', 'nid'))
-
-        // Must be an alarm content type.
-        ->condition('type', 'alarm')
-
+        ->condition('type', 'alarm') // Must be an alarm content type.
         ->execute();
 
     // For each nid found, record their times.
