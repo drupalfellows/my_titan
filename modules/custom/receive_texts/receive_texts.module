@@ -18,8 +18,8 @@ function receive_texts_cronapi($op, $job = NULL) {
  * Implements hook_twilio_sms_incoming()
  * is called when a user texts the system, responds with hello world.
  */
-function receive_texts_twilio_sms_incoming($number, $message, $options)  {
-   twilio_send($number, 'Hello, World!'); 
+function receive_texts_twilio_sms_incoming($number, $message, $time, $options)  {
+   twilio_send($number, "Hello, World!"); 
 }
 
 /**

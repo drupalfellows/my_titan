@@ -250,15 +250,18 @@ function twilio_command($command = 'auth', $data = array(), $config = NULL, $acc
  * Callback for incoming messages.
  */
 function twilio_receive_message() {
+  // Get the date & time that the text was received.
+  $time = new DateTime(NULL, new DateTimeZone('America/Toronto'));
+
   $number = str_replace('+1', '', $_REQUEST['From']);
   $message = check_plain($_REQUEST['Body']);
   $options = array();
   if (array_key_exists('To', $_REQUEST) && !empty($_REQUEST['To'])) {
     $options['receiver'] = $_REQUEST['To'];
   }
-  $log_message = 'An SMS message was sent from ' . $number . ' containing the message "' . $message . '"' . $_REQUEST;
+  $log_message = 'An SMS message was sent from ' . $number . ' containing the message "' . $message . '"';
   watchdog('Twilio', $log_message);
-  twilio_sms_incoming($number, $message, $options);
+  twilio_sms_incoming($number, $message, $time, $options);
 }
 
 /**
@@ -270,9 +273,9 @@ function twilio_receive_message() {
  * @param string $message
  *   The content of the text message.
  */
-function twilio_sms_incoming($number, $message, $options = array()) {
+function twilio_sms_incoming($number, $message, $time, $options = array()) {
   // Invoke a hook for the incoming message so other modules can do things with it.
-  module_invoke_all('twilio_sms_incoming', $number, $message, $options);
+  module_invoke_all('twilio_sms_incoming', $number, $message, $time, $options);
 }
 
 
