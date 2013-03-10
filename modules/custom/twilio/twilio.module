@@ -250,14 +250,13 @@ function twilio_command($command = 'auth', $data = array(), $config = NULL, $acc
  * Callback for incoming messages.
  */
 function twilio_receive_message() {
-  dpm($_REQUEST);
   $number = str_replace('+1', '', $_REQUEST['From']);
   $message = check_plain($_REQUEST['Body']);
   $options = array();
   if (array_key_exists('To', $_REQUEST) && !empty($_REQUEST['To'])) {
     $options['receiver'] = $_REQUEST['To'];
   }
-  $log_message = 'An SMS message was sent from ' . $number . ' containing the message "' . $message . '"';
+  $log_message = 'An SMS message was sent from ' . $number . ' containing the message "' . $message . '"' . $_REQUEST;
   watchdog('Twilio', $log_message);
   twilio_sms_incoming($number, $message, $options);
 }
