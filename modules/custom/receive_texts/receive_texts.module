@@ -4,7 +4,7 @@
  * A module that provides the ability to check received messages.
  */
 
-/* The hook used to add cron functionality to the check_alarms module */
+/* The hook used to add cron functionality to the receive_alarms module */
 function receive_texts_cronapi($op, $job = NULL) {
     $items['Receive texts'] = array(
         'description' => 'Check received texts',
@@ -12,6 +12,14 @@ function receive_texts_cronapi($op, $job = NULL) {
         'callback'    => 'receive_texts',
     );
     return $items;
+}
+
+/**
+ * Implements hook_twilio_sms_incoming()
+ * is called when a user texts the system, responds with hello world.
+ */
+function receive_texts_twilio_sms_incoming($number, $message, $options)  {
+   twilio_send($number, 'Hello, World!'); 
 }
 
 /**
