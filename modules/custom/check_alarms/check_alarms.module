@@ -13,11 +13,18 @@ function check_alarms_cronapi($op, $job = NULL) {
     );
 
     $items['Update Alarms'] = array(
-        'description' => 'Checks if for new alarms to be added next week',
+        'description' => 'Checks for new alarms to be added next week',
         'rule'        => '0 0 * * *', // Once a day at midnight
         'callback'    => 'update_alarms',
     );
+
+ $items['Delete Old Alarms'] = array(
+        'description' => 'Checks for alarms sent over a week ago, delete them.',
+        'rule'        => '0 0 * * *', // Once a day at midnight
+        'callback'    => 'delete_old_alarms',
+    );
  
+
     return $items;
 }
 
@@ -259,8 +266,6 @@ function check_alarms() {
         $text = $flashcard->field_question;
 
         // Send the text.
-        // For now, to verify that the text is being sent for the correct alarm,
-        // append the alarm timestamp.
         twilio_send($number, $text);
 
         // Set the field_sent flag on the alarm so that we don't send multiple
@@ -489,3 +494,33 @@ function update_alarms() {
         node_save($set_node);
     }//OUTER FOREACH
 }//update_alarms
+
+/*
+ * delete_old_alarms(): clears out alarms answered greater than a week ago
+ */
+function delete_old_alarms() {
+    // Get the current date and time as a DateTime object. This object tracks
+    // all of the annoying stuff like time zones, and makes it easy to add
+    // time intervals to a date.
+    $current_time = new DateTime;
+
+    // to get the DateTime for last week, just subtract 7 days
+    $current_time->sub(new Dateinterval('P7D'));
+
+    // Get all alarms sent earlier than 1 week ago.
+    $alarm_query = new EntityFieldQuery;
+    $alarms = $alarm_query
+        ->entityCondition('entity_type', 'node', '=')
+        ->entityCondition('bundle', 'alarm', '=')
+        ->propertyCondition('status', NODE_PUBLISHED, '=')
+        ->fieldCondition('field_time', 'value', 
+                         $current_time->format('Y-m-d'), '<')
+        ->execute();
+
+    // Now delete all of these alarms
+    if( isset($alarms['node'])) {
+        node_delete_multiple(array_keys($alarms['node']));
+    }
+    
+    return;
+}
