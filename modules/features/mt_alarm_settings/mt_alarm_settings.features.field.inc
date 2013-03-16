@@ -126,7 +126,7 @@ function mt_alarm_settings_field_default_fields() {
         ),
       ),
       'deleted' => '0',
-      'description' => 'Whether the alarm is enabled or not.',
+      'description' => '',
       'display' => array(
         'default' => array(
           'label' => 'above',
@@ -144,8 +144,8 @@ function mt_alarm_settings_field_default_fields() {
       ),
       'entity_type' => 'node',
       'field_name' => 'field_enabled',
-      'label' => 'Enabled',
-      'required' => 1,
+      'label' => 'Turn alarm on:',
+      'required' => 0,
       'settings' => array(
         'user_register_form' => FALSE,
       ),
@@ -195,7 +195,7 @@ function mt_alarm_settings_field_default_fields() {
         ),
       ),
       'deleted' => '0',
-      'description' => 'Whether the alarm repeats weekly or not.',
+      'description' => '',
       'display' => array(
         'default' => array(
           'label' => 'above',
@@ -213,8 +213,8 @@ function mt_alarm_settings_field_default_fields() {
       ),
       'entity_type' => 'node',
       'field_name' => 'field_repeats',
-      'label' => 'Repeats',
-      'required' => 1,
+      'label' => 'Repeat weekly?',
+      'required' => 0,
       'settings' => array(
         'user_register_form' => FALSE,
       ),
@@ -222,7 +222,7 @@ function mt_alarm_settings_field_default_fields() {
         'active' => 1,
         'module' => 'options',
         'settings' => array(
-          'display_label' => 0,
+          'display_label' => 1,
         ),
         'type' => 'options_onoff',
         'weight' => '33',
@@ -268,7 +268,7 @@ function mt_alarm_settings_field_default_fields() {
       'bundle' => 'alarm_setting',
       'default_value' => NULL,
       'deleted' => '0',
-      'description' => 'The difficulty of the question asked of the user.',
+      'description' => '',
       'display' => array(
         'default' => array(
           'label' => 'above',
@@ -286,8 +286,8 @@ function mt_alarm_settings_field_default_fields() {
       ),
       'entity_type' => 'node',
       'field_name' => 'field_set_difficulty',
-      'label' => 'Difficulty',
-      'required' => 1,
+      'label' => 'Select difficulty:',
+      'required' => 0,
       'settings' => array(
         'user_register_form' => FALSE,
       ),
@@ -338,7 +338,7 @@ function mt_alarm_settings_field_default_fields() {
         ),
       ),
       'deleted' => '0',
-      'description' => 'The reason for this alarm.',
+      'description' => '',
       'display' => array(
         'default' => array(
           'label' => 'above',
@@ -356,7 +356,7 @@ function mt_alarm_settings_field_default_fields() {
       ),
       'entity_type' => 'node',
       'field_name' => 'field_set_occasion',
-      'label' => 'Occasion',
+      'label' => 'Notes:',
       'required' => 0,
       'settings' => array(
         'text_processing' => '0',
@@ -412,7 +412,7 @@ function mt_alarm_settings_field_default_fields() {
       'bundle' => 'alarm_setting',
       'default_value' => NULL,
       'deleted' => '0',
-      'description' => 'The subject the user will be tested on.',
+      'description' => '',
       'display' => array(
         'default' => array(
           'label' => 'above',
@@ -430,8 +430,8 @@ function mt_alarm_settings_field_default_fields() {
       ),
       'entity_type' => 'node',
       'field_name' => 'field_set_subject',
-      'label' => 'Subject',
-      'required' => 1,
+      'label' => 'Choose a subject:',
+      'required' => 0,
       'settings' => array(
         'user_register_form' => FALSE,
       ),
@@ -469,7 +469,7 @@ function mt_alarm_settings_field_default_fields() {
       'bundle' => 'alarm_setting',
       'default_value' => NULL,
       'deleted' => '0',
-      'description' => 'The time at which the alarm will go off.',
+      'description' => '',
       'display' => array(
         'default' => array(
           'label' => 'above',
@@ -495,7 +495,7 @@ function mt_alarm_settings_field_default_fields() {
       ),
       'entity_type' => 'node',
       'field_name' => 'field_set_time',
-      'label' => 'Time',
+      'label' => 'Set alarm time:',
       'required' => 0,
       'settings' => array(
         'disable_plugin' => 0,
@@ -532,19 +532,13 @@ function mt_alarm_settings_field_default_fields() {
   // Translatables
   // Included for use with string extractors like potx.
   t('Associated Alarms');
-  t('Difficulty');
-  t('Enabled');
-  t('Occasion');
-  t('Repeats');
-  t('Subject');
+  t('Choose a subject:');
+  t('Notes:');
+  t('Repeat weekly?');
+  t('Select difficulty:');
+  t('Set alarm time:');
   t('The alarms created by this alarm setting.');
-  t('The difficulty of the question asked of the user.');
-  t('The reason for this alarm.');
-  t('The subject the user will be tested on.');
-  t('The time at which the alarm will go off.');
-  t('Time');
-  t('Whether the alarm is enabled or not.');
-  t('Whether the alarm repeats weekly or not.');
+  t('Turn alarm on:');
 
   return $fields;
 }
