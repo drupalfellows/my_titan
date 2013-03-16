@@ -57,7 +57,7 @@ function receive_texts_twilio_sms_incoming($number, $message, $time, $options)  
         return;
     }
     
-    watchdog('Receive Texts', print_r($alarms['node'], true));
+    //watchdog('Receive Texts', print_r($alarms['node'], true));
     $alarm_nodes = node_load_multiple(array_keys($alarms['node']));
 
     // Sort alarms based on time of fire, earliest to latest.
@@ -104,16 +104,17 @@ function check_answer($flashcard, $message) {
     // Get the answers to the flashcard.
     $answer_lang = field_language('node', $flashcard, 'field_answer');
     $answers = $flashcard->field_answer[$answer_lang];
-
     // Check each answer for a match, return true if one occurs.
     foreach($answers as $answer) {
         // Case-insensitive comparison of the answer.
-        if (strcasecmp($answer['value'], $message)) {
+        if (strcasecmp($answer['value'], $message) == 0) {
             return true; 
         }
     } 
 
     // Otherwise return false
+    
+//    watchdog("Receive Texts", print_r($answer['value'], true) . print_r($message, true));
     return false;
 }
 
