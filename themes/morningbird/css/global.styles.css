@@ -320,6 +320,32 @@ var {
 
 
 /* =============================================================================
+ *   Slideshow
+ * ========================================================================== */
+
+.view-actualslideshow{
+	width: 655px;
+	height: 463px;
+	background-image: url(../images/pillow_bg.png);
+	background-repeat: no-repeat;
+	margin: 0 auto;
+}
+
+.image-style-none{
+	margin-top:45px;
+	margin-left:68px;
+}
+
+#node-1{
+	display: none;
+}
+
+.feed-icon{
+	display: none;
+}
+
+
+/* =============================================================================
  *   Page content header
  * ========================================================================== */
 
