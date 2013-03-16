@@ -120,9 +120,87 @@ var {
   font-family: Consolas, Monaco, 'Courier New', Courier, monospace, sans-serif;
 }
 
+/* =============================================================================
+ *   Create Alarm
+ * ========================================================================== */
+.option {
+	font-family: 'Dancing Script', cursive;
+	color: white;
+}
+
+.description{
+	font-family: 'Fjalla One', sans-serif;
+	color: white;
+	padding: 1em;
+}
+
+.fieldset-legend{
+	font-family: 'Dancing Script', cursive;
+	color: white;
+	font-size: 2em;
+	display: block;
+}
+
+.fieldset-description{
+	font-family: 'Fjalla One', sans-serif;
+	color: white;
+	padding: 1em;
+}
+
+label{
+	font-family: 'Dancing Script', cursive;
+	color: white;	
+	font-size: 1.5em;
+}
+
+#edit-field-set-occasion-und-0-value{
+	font-family: 'Fjalla One', sans-serif;
+	color: #202020;
+	padding: 1em;
+	
+}
+
+.form-submit{
+	font-family: 'Fjalla One', sans-serif;
+	float: left;
+	font-size: 14px;
+	font-weight: bold;
+	padding: 10px 15px;
+	text-align: center;
+	box-shadow: 0 0.5em 0 #a65026;
+	-moz-box-shadow: 0 0.5em 0 #a65026;
+	-webkit-box-shadow: 0 0.5em 0 #a65026;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	background-color: #F27435;
+	color: white;
+	}
+
+.form-submit:hover {
+background-color: #F02475;
+box-shadow: 0 5px 0 #af1a55;
+-moz-box-shadow: 0 5px 0 #af1a55;
+-webkit-box-shadow: 0 5px 0 #af1a55;
+}
+
+.form-item
+{
+	width: 42%;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	margin-right: 4%;
+	padding: 1.5em;
+	float: left;
+	display: block;
+	background-color: #f58e08;
+
+}
 
 /* =============================================================================
- *   Wrappers
+ *   Wra
+ pers
  * ========================================================================== */
 
 /*
