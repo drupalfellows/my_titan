@@ -1,0 +1,120 @@
+/* =============================================================================
+ *   Create Alarm
+ * ========================================================================== */
+
+.page-node-add-alarm-setting #edit-field-set-time-und-0{
+clear:both;
+float:none;
+}
+
+.page-node-add-alarm-setting .option {
+	font-family: 'Dancing Script', cursive;
+	color: white;
+}
+
+/* !hello */
+
+.page-node-add-alarm-setting .description{
+	font-family: 'Fjalla One', sans-serif;
+	color: white;
+	padding: 1em;
+	display: none;
+}
+
+.page-node-add-alarm-setting .fieldset-legend{
+	font-family: 'Dancing Script', cursive;
+	color: white;
+	font-size: 2em;
+	display: block;
+}
+
+.page-node-add-alarm-setting .fieldset-description{
+	font-family: 'Fjalla One', sans-serif;
+	color: white;
+	padding: 1em;
+}
+
+.page-node-add-alarm-setting label{
+	font-family: 'Dancing Script', cursive;
+	color: white;	
+	font-size: 1.5em;
+}
+
+.page-node-add-alarm-setting #edit-field-set-occasion-und-0-value{
+	font-family: 'Fjalla One', sans-serif;
+	color: #202020;
+	padding: 1em;
+	
+}
+
+.page-node-add-alarm-setting .form-submit{
+	font-family: 'Fjalla One', sans-serif;
+	float: left;
+	font-size: 14px;
+	font-weight: bold;
+	padding: 10px 15px;
+	text-align: center;
+	box-shadow: 0 0.5em 0 #a65026;
+	-moz-box-shadow: 0 0.5em 0 #a65026;
+	-webkit-box-shadow: 0 0.5em 0 #a65026;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	background-color: #F27435;
+	color: white;
+	}
+	
+	
+
+.page-node-add-alarm-setting .form-submit:hover {
+background-color: #F02475;
+box-shadow: 0 5px 0 #af1a55;
+-moz-box-shadow: 0 5px 0 #af1a55;
+-webkit-box-shadow: 0 5px 0 #af1a55;
+}
+
+.page-node-add-alarm-setting .form-item
+{
+	width: 42%;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	margin-right: 4%;
+	padding: 1.5em;
+	float: left;
+	display: inline-block;
+	background-color: #f58e08;
+	border-color: white;
+	border: 1px solid #FFFFFF;
+
+}
+
+.page-node-add-alarm-setting .form-checkboxes .form-item, .form-radios .form-item {
+background-color: #666;
+width: 10em;
+}
+
+.page-node-add-alarm-setting .form-item-field-set-time-und-0-value{
+	width:93%;
+}
+
+.page-node-add-alarm-setting .form-item-field-set-time-und-0-days{
+	width:93%;
+}
+
+.page-node-add-alarm-setting .description{
+/* 	float: left; */
+}
+
+.page-node-add-alarm-setting .form-item-field-associated-alarms-und{
+	display: none;
+}
+
+
+.page-node-add-alarm-setting .option{
+	font-family: 'Fjalla One', sans-serif;
+}
+
+.page-node-add-alarm-setting checkbox{
+	width: 100em;
+}
