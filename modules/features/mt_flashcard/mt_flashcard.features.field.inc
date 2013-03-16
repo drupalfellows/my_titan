@@ -400,7 +400,7 @@ function mt_flashcard_field_default_fields() {
       'description' => 'The icon that will be displayed next to the subject.',
       'display' => array(
         'default' => array(
-          'label' => 'above',
+          'label' => 'hidden',
           'module' => 'image',
           'settings' => array(
             'image_link' => '',
