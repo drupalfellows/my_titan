@@ -166,17 +166,6 @@ function check_alarms() {
         // Load the Alarm node from the query row.
         $a_node = node_load($a_row->nid);
 
-        // Skip this alarm if it has already been sent.
-        $sent_lang = field_language('node', $a_node, 'field_sent');
-        if ($a_node->field_sent[$sent_lang][0]['value']) continue;
-
-        // Get the taxonomies that define what card they want
-        $sent_lang = field_language('node', $a_node, 'field_question_difficulty');
-        $card_difficulty = $a_node->field_question_difficulty[$sent_lang][0]['tid'];
-
-        $sent_lang = field_language('node', $a_node, 'field_question_subject');
-        $card_subject = $a_node->field_question_subject[$sent_lang][0]['tid'];
-
         // Use field_get_items() to get the field_time field.
         // A difference here is that the 
         // The return value of field_get_items() is still an array, but its
@@ -201,20 +190,9 @@ function check_alarms() {
 
         // Use PHP's date_timezone_set() function to convert $local_date into
         // the user's local time zone.
-        // $local_date->date and $alarm_date['value'] now contain different
-        // values if and only if the current user is not in UTC area.
-        $u_query = db_select('users', 'u')
-            ->fields('u', array('timezone'))
-            ->condition('uid', $a_row->uid)
-            ->execute();
-
-        // Only 1 timezone per user, so it should be fine to use fetchAssoc()
-        // on the query (which only returns a single row as a 1-element
-        // array, key being 'timezone' and value being the timezone string) 
-        $u_array = $u_query->fetchAssoc('timezone');
-        $u_tz = $u_array['timezone'];
-
-        $local_date = date_timezone_set($local_date, timezone_open($u_tz));
+        $alarm_user = user_load($a_row->uid);
+        $local_date = date_timezone_set(
+                        $local_date, timezone_open($alarm_user->timezone));
 
         // strtotime() (a PHP function) converts a date/time string into a
         // timestamp format, but assumes that the passed-in string is in the
@@ -234,9 +212,36 @@ function check_alarms() {
                              array('%tnow' => $timestamp_now)));
 
         // Compare $timestamp_now and $timestamp_alarm.
-        // Don't send a text if the alarm time isn't within 5 minutes of now.
-        if (abs($timestamp_now - $timestamp_alarm) > 60 * 5)
+        // Don't send a text if the alarm time isn't within 2 minutes of now.
+        if (abs($timestamp_now - $timestamp_alarm) > 60 * 2)
             continue;
+
+        // Skip this alarm if it has already been sent, and it's been answered.
+        // The idea is to continue sending the alarm if it goes unanswered, but
+        // only up to 2 minutes after the alarm time (which was already checked
+        // in the previous if statement).
+        // But here, if the user hasn't answered the alarm within 1 minute,
+        // then resend the alarm at a rate of once per minute, until it's
+        // answered or if it falls outside the 2-minute time limit (as above).
+        $sent_lang = field_language('node', $a_node, 'field_sent');
+        $answered_lang = field_language('node', $a_node, 'field_answered');
+        if ($a_node->field_sent[$sent_lang][0]['value']
+         && $a_node->field_answered[$answered_lang][0]['value']) {
+            // Send the user the exact same question.
+            $flashcard
+                = node_load($a_node->field_card_sent['und'][0]['target_id']);
+            $text = 'Hey ' . $alarm_user->name . ', quick question: '
+                  . $flashcard->field_question['und'][0]['value'];
+            twilio_send($number, $text);
+            continue;
+        }
+
+        // Get the taxonomies that define what card they want
+        $sent_lang = field_language('node', $a_node, 'field_question_difficulty');
+        $card_difficulty = $a_node->field_question_difficulty[$sent_lang][0]['tid'];
+
+        $sent_lang = field_language('node', $a_node, 'field_question_subject');
+        $card_subject = $a_node->field_question_subject[$sent_lang][0]['tid'];
        
         // Get the user's cell number.
         $t_query = db_select('twilio_user', 'u')
@@ -263,7 +268,9 @@ function check_alarms() {
 
         $nid = array_rand($cards['node']);
         $flashcard = node_load($nid);
-        $text = $flashcard->field_question;
+        dpm($flashcard->field_question);
+        $text = 'Hey ' . $alarm_user->name . ', quick question: '
+              . $flashcard->field_question['und'][0]['value'];
 
         // Send the text.
         twilio_send($number, $text);
