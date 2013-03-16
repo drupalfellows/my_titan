@@ -152,128 +152,105 @@ function update_alarms_form_submit($form, &$form_state)
  * the author of the alarm.
  */
 function check_alarms() {
-    // Get the nids of the alarms that users have set.
-    // (can't view the fields just by using db_select; must get nids, then call
-    // node_load() on the nids)
-    $query = db_select('node', 'al')
-        ->fields('al', array('uid', 'nid'))
-        ->condition('type', 'alarm') // Must be an alarm content type.
-        ->execute();
+  // Look for alarms whose dates are between 2 min ago and 2 min later.
+  // When creating a new DateTime object, need to convert it to UTC so that
+  // it may be compared to the UTC times that are stored in the alarms.
+  $current_time = new DateTime;
+  $current_time->setTimeZone(new DateTimeZone('UTC'));
+  $one_min_ago = $current_time->sub(new Dateinterval('PT2M'));
 
-    // For each nid found, record their times.
-    foreach ($query as $a_row)
-    {
-        // Load the Alarm node from the query row.
-        $a_node = node_load($a_row->nid);
+  $current_time = new DateTime;
+  $current_time->setTimeZone(new DateTimeZone('UTC'));
+  $one_min_later = $current_time->add(new Dateinterval('PT2M'));
 
-        // Skip this alarm if it has already been sent.
-        $sent_lang = field_language('node', $a_node, 'field_sent');
-        if ($a_node->field_sent[$sent_lang][0]['value']) continue;
+  // Query the alarms.
+  $alarm_query = new EntityFieldQuery;
+  $alarms = $alarm_query
+    ->entityCondition('entity_type', 'node', '=')
+    ->entityCondition('bundle', 'alarm', '=')
+    ->propertyCondition('status', NODE_PUBLISHED, '=')
+    ->fieldCondition('field_time', 'value', $one_min_ago->format('Y-m-d H:i:s'), '>')
+    ->fieldCondition('field_time', 'value', $one_min_later->format('Y-m-d H:i:s'), '<')
+    ->execute();
 
-        // Get the taxonomies that define what card they want
-        $sent_lang = field_language('node', $a_node, 'field_question_difficulty');
-        $card_difficulty = $a_node->field_question_difficulty[$sent_lang][0]['tid'];
+  if (isset($alarms['node'])) {
+    $alarm_array = $alarms['node'];
+    dpm($alarm_array);
+  } else {
+    drupal_set_message('No alarms within 1 minute of now.');
+    return;
+  }
 
-        $sent_lang = field_language('node', $a_node, 'field_question_subject');
-        $card_subject = $a_node->field_question_subject[$sent_lang][0]['tid'];
+  // For each nid found, record their times.
+  foreach ($alarm_array as $a_nid) {
+    // Load the Alarm node from the query row.
+    $a_node = node_load($a_nid->nid);
 
-        // Use field_get_items() to get the field_time field.
-        // A difference here is that the 
-        // The return value of field_get_items() is still an array, but its
-        // sole element is another array that contains the time, time zone, and 
-        // the database time zone.
-        $alarm_date_outer = field_get_items('node', $a_node, 'field_time');
-
-        // $alarm_date['value'] is in the format YYYY-MM-DD HH:MM:SS. The date
-        // itself is converted to UTC, regardless of 
-        // $alarm_date['timezone'] and $alarm_date['timezone_db'] specify a time
-        // zone string, in a format compatible with PHP's DateTimeZone class.
-        $alarm_date = $alarm_date_outer[0];
-
-        // Use PHP's date_create() function to create a DateTime object.
-        // $alarm_date['timezone_db'], whose value is always 'UTC', will tell
-        // date_create() to consider the raw date and time in
-        // $alarm_date['value'](w/o time zone) as being UTC.
-        // $alarm_date['value'] and $local_date->date currently contain the same
-        // value.
-        $local_date = date_create(
-                      $alarm_date['value'] . ' ' . $alarm_date['timezone_db']);
-
-        // Use PHP's date_timezone_set() function to convert $local_date into
-        // the user's local time zone.
-        // $local_date->date and $alarm_date['value'] now contain different
-        // values if and only if the current user is not in UTC area.
-        $u_query = db_select('users', 'u')
-            ->fields('u', array('timezone'))
-            ->condition('uid', $a_row->uid)
-            ->execute();
-
-        // Only 1 timezone per user, so it should be fine to use fetchAssoc()
-        // on the query (which only returns a single row as a 1-element
-        // array, key being 'timezone' and value being the timezone string) 
-        $u_array = $u_query->fetchAssoc('timezone');
-        $u_tz = $u_array['timezone'];
-
-        $local_date = date_timezone_set($local_date, timezone_open($u_tz));
-
-        // strtotime() (a PHP function) converts a date/time string into a
-        // timestamp format, but assumes that the passed-in string is in the
-        // site's local time zone.
-        // For example, a Toronto-based time string (without specifying time
-        // zone), would be converted to a timestamp, but 5 hours ahead of
-        // the original time string (b/c Toronto time is 5 hours behind UTC)
-        // $local_date->date is accessed w/ date_format().
-        $timestamp_alarm = strtotime(date_format($local_date, 'Y-m-d H:i:s'));
-        drupal_set_message(t('Alarm timestamp (UTC): %alarm',
-                    array('%alarm' => print_r($timestamp_alarm, TRUE))));
-
-        // time() gets a timestamp corresponding to the current time.
-        // It's always UTC.
-        $timestamp_now = time();
-        drupal_set_message(t('Request timestamp (UTC): %tnow',
-                             array('%tnow' => $timestamp_now)));
-
-        // Compare $timestamp_now and $timestamp_alarm.
-        // Don't send a text if the alarm time isn't within 5 minutes of now.
-        if (abs($timestamp_now - $timestamp_alarm) > 60 * 5)
-            continue;
-       
-        // Get the user's cell number.
-        $t_query = db_select('twilio_user', 'u')
-            ->fields('u', array('number'))
-            ->condition('uid', $a_row->uid)
-            ->execute();
-
-        $t_array = $t_query->fetchAssoc('number');
-        $number = $t_array['number'];
-
-        // No number? Skip.
-        if ($number == NULL)
-            continue;
-
-        // Fetch a random question
-        $card_query = new EntityFieldQuery;
-        $cards = $card_query
-            ->entityCondition('entity_type', 'node', '=')
-            ->entityCondition('bundle', 'flashcard', '=')
-            ->propertyCondition('status', NODE_PUBLISHED, '=')
-            ->fieldCondition('field_difficulty', 'tid', $card_difficulty, '=')
-            ->fieldCondition('field_subject', 'tid', $card_subject, '=')
-            ->execute();
-
-        $nid = array_rand($cards['node']);
-        $flashcard = node_load($nid);
-        $text = $flashcard->field_question;
-
-        // Send the text.
-        twilio_send($number, $text);
-
-        // Set the field_sent flag on the alarm so that we don't send multiple
-        // copies of the same node
-        $a_node->field_sent[$sent_lang][0]['value'] = 1;
-	$a_node->field_card_sent['und'][0]['target_id'] = $nid;
-        node_save($a_node);
+    // Skip this alarm if it has already been sent, and it's been answered.
+    // The idea is to continue sending the alarm if it goes unanswered, but
+    // only up to 2 minutes after the alarm time (which was already checked
+    // in the previous if statement).
+    // But here, if the user hasn't answered the alarm within 1 minute,
+    // then resend the alarm at a rate of once per minute, until it's
+    // answered or if it falls outside the 2-minute time limit (as above).
+    $sent_lang = field_language('node', $a_node, 'field_sent');
+    $answered_lang = field_language('node', $a_node, 'field_answered');
+    if ($a_node->field_sent[$sent_lang][0]['value']
+     && $a_node->field_answered[$answered_lang][0]['value']) {
+      // Send the user the exact same question.
+      $flashcard = node_load($a_node->field_card_sent['und'][0]['target_id']);
+      $text = 'Hey ' . $alarm_user->name . ', quick question: '
+            . $flashcard->field_question['und'][0]['value'];
+      twilio_send($number, $text);
+      continue;
     }
+
+    // Get the taxonomies that define what card they want
+    $sent_lang = field_language('node', $a_node, 'field_question_difficulty');
+    $card_difficulty = $a_node->field_question_difficulty[$sent_lang][0]['tid'];
+
+    $sent_lang = field_language('node', $a_node, 'field_question_subject');
+    $card_subject = $a_node->field_question_subject[$sent_lang][0]['tid'];
+
+    // Get the user's cell number.
+    $t_query = db_select('twilio_user', 'u')
+      ->fields('u', array('number'))
+      ->condition('uid', $a_node->uid)
+      ->execute();
+
+    $t_array = $t_query->fetchAssoc('number');
+    $number = $t_array['number'];
+
+    // No number? Skip.
+    if ($number == NULL)
+      continue;
+
+    // Fetch a random question
+    $card_query = new EntityFieldQuery;
+    $cards = $card_query
+      ->entityCondition('entity_type', 'node', '=')
+      ->entityCondition('bundle', 'flashcard', '=')
+      ->propertyCondition('status', NODE_PUBLISHED, '=')
+      ->fieldCondition('field_difficulty', 'tid', $card_difficulty, '=')
+      ->fieldCondition('field_subject', 'tid', $card_subject, '=')
+      ->execute();
+
+    $nid = array_rand($cards['node']);
+    $flashcard = node_load($nid);
+
+    $alarm_user = user_load($a_node->uid);
+    $text = 'Hey ' . $alarm_user->name . ', quick question: '
+          . $flashcard->field_question['und'][0]['value'];
+
+    // Send the text.
+    twilio_send($number, $text);
+
+    // Set the field_sent flag on the alarm so that we don't send multiple
+    // copies of the same node
+    $a_node->field_sent[$sent_lang][0]['value'] = 1;
+    $a_node->field_card_sent['und'][0]['target_id'] = $nid;
+    node_save($a_node);
+  }
 }
 
 /*
