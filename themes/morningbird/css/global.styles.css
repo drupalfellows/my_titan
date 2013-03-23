@@ -45,28 +45,24 @@ html {
 body {
   font-family: "Trebuchet MS", "Helvetica Neue", Arial, Helvetica, sans-serif;
   font-size: 87.5%;
-  background-color: #f69023;
-  border-top:4em solid #1C1C1D;
-/*   background-image: url("../images/footerBackground.png"); */
-  
-/*   background: no-repeat; */
+  background: #f69023 url('../images/footerBackground.png') repeat-x scroll center bottom;
+  border-top: 4em solid #1C1C1D;
 }
 
 
 /* =============================================================================
  *   HTML Elements
  * ========================================================================== */
+#page {
+	position: relative;
+}
 #primary-menu-bar {
-	position:absolute;
-	top:0;
+  position: absolute;
+  top: -2em;
+  right: 0;
 }
 
 .html {
-	background-image: url(../images/footerBackground.png);
-/* 	background-repeat: no-repeat; */
-	background-position: center bottom;
-	background-repeat: repeat-x;
-	background-position-x: 0;
 }
 
 h1 {
@@ -75,9 +71,9 @@ h1 {
 }
 
 h2 {
-		font-family: 'Dancing Script', cursive;
-color: white;
-font-size: 2em;
+  font-family: 'Dancing Script', cursive;
+  color: white;
+  font-size: 2em;
 }
 
 h3 {}
@@ -157,23 +153,21 @@ var {
  * Wraps all header elements - branding and .region-header
  */
 #header {
-	/* background-image: url(../images/headerBackground.png); */
-	/*background-color: red;*/
-	/*margin: 0px;
-	padding: 0px;*/
+	height: 0;
 }
 
 /*
  * Wraps the sidebars the content column
  */
 #columns {
-  background: transparent url('../images/imageAssets/WEB/HOMEPAGE/home_slogan.png') no-repeat scroll center top;
 }
 
 /*
  * Main content column wrapper
  */
-#content-column {}
+#content-column {
+	padding-top: 2.071em;
+}
 
 /*
  * Wraps the main-content-header, the content region and feed-icons. Use this wrapper to style the entire main content column
@@ -291,7 +285,8 @@ var {
  * Logo
  */
 #logo {
-  padding: 10px 0;
+  padding: 0;
+  margin-top: -30px;
 }
 
 #logo img {
@@ -342,7 +337,7 @@ var {
 	margin: 0 auto;
 }
 
-.image-style-none{
+.view-actualslideshow .image-style-none{
 	margin-top:45px;
 	margin-left:68px;
 }
