@@ -53,7 +53,9 @@ function receive_texts_twilio_sms_incoming($number, $message, $time, $options)  
     // handle the case where there are no alarms, by telling the user that he has
     // no alarms.
     if (!isset($alarms['node'])) {
-        twilio_send($number, "You don't have any alarms sent! Set an alarm at morningbird.puzzledengsci.com/new_alarms");
+        twilio_send($number, "Well this is hawkward, you don't have any "
+                           . "alarms set! Set one up at "
+                           . "morningbird.puzzledengsci.com/new_alarms");
         return;
     }
     
@@ -66,7 +68,7 @@ function receive_texts_twilio_sms_incoming($number, $message, $time, $options)  
     // Handle the case where the user has multiple outstanding alarms, by assuming
     // That the user is answering the least recent one.
     if (count($alarms['node']) > 1) {
-        twilio_send($number, 'ERROR: Multiple outstanding alarms. Assuming you are answering the least recent one...');
+        //twilio_send($number, 'ERROR: Multiple outstanding alarms. Assuming you are answering the least recent one...');
     }
 
     // Otherwise they only have one alarm, as desired.
@@ -86,12 +88,13 @@ function receive_texts_twilio_sms_incoming($number, $message, $time, $options)  
         $answered_lang = field_language('node', $alarm, 'field_answered');
         $alarm->field_answered[$answered_lang][0]['value'] = '1';
         node_save($alarm);
-        twilio_send($number, 'Right answer! Good Morning, User X!');
+        twilio_send($number, "You're right! I think I just met the wisest owl "
+                           . "there is.");
     }
 
     // otherwise the user was wrong
      else {
-        twilio_send($number, 'Wrong! Try again.');
+        twilio_send($number, 'Wrong, silly goose! Try again.');
     } 
 }
 
