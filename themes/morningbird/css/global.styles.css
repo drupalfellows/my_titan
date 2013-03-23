@@ -45,19 +45,40 @@ html {
 body {
   font-family: "Trebuchet MS", "Helvetica Neue", Arial, Helvetica, sans-serif;
   font-size: 87.5%;
+  background-color: #f69023;
+  border-top:4em solid #1C1C1D;
+/*   background-image: url("../images/footerBackground.png"); */
+  
+/*   background: no-repeat; */
 }
 
 
 /* =============================================================================
  *   HTML Elements
  * ========================================================================== */
+#primary-menu-bar {
+	position:absolute;
+	top:0;
+}
+
+.html {
+	background-image: url(../images/footerBackground.png);
+/* 	background-repeat: no-repeat; */
+	background-position: center bottom;
+	background-repeat: repeat-x;
+	background-position-x: 0;
+}
 
 h1 {
 	font-family: 'Dancing Script', cursive;
 	color: white;
 }
 
-h2 {}
+h2 {
+		font-family: 'Dancing Script', cursive;
+color: white;
+font-size: 2em;
+}
 
 h3 {}
 
@@ -136,7 +157,7 @@ var {
  * Wraps all header elements - branding and .region-header
  */
 #header {
-	background-image: url(../images/headerBackground.png);
+	/* background-image: url(../images/headerBackground.png); */
 	/*background-color: red;*/
 	/*margin: 0px;
 	padding: 0px;*/
@@ -145,7 +166,11 @@ var {
 /*
  * Wraps the sidebars the content column
  */
-#columns {}
+#columns {
+			background-image: url(../images/imageAssets/WEB/HOMEPAGE/home_slogan.png);
+
+			background-image: repeat-x;
+}
 
 /*
  * Main content column wrapper
@@ -155,17 +180,25 @@ var {
 /*
  * Wraps the main-content-header, the content region and feed-icons. Use this wrapper to style the entire main content column
  */
-#main-content {}
+#main-content {
+	margin-bottom: 12em;
+}
 
 /*
  * Wraps the content region, avoid applying styles to this wrapper, its used mainly for position and invisible gutters and can be problematic to style
  */
-#content {}
+#content {
+
+		
+}
 
 /*
  * Footer wrapper
  */
-#footer {}
+#footer {
+	/* background-image: url(../images/footerBackground.png); */
+	
+}
 
 /*
  * Panels may need additional margin wrangling when in the $content region
@@ -296,6 +329,36 @@ var {
  */
 #site-slogan {
   margin: 0;
+}
+
+
+/* =============================================================================
+ *   Slideshow
+ * ========================================================================== */
+
+.view-actualslideshow{
+	width: 655px;
+	height: 563px;
+	background-image: url(../images/pillow_bg.png);
+	background-repeat: no-repeat;
+	margin: 0 auto;
+}
+
+.image-style-none{
+	margin-top:45px;
+	margin-left:68px;
+}
+
+#node-1{
+	display: none;
+}
+
+.feed-icon{
+	display: none;
+}
+
+.view-content{
+	padding-top: 100px;
 }
 
 
@@ -1129,8 +1192,6 @@ ul.action-links li {}
  * Block title
  */
 .block-title {
-  margin: 0;
-  font-family: fantasy;
 }
 
 /*
@@ -1773,3 +1834,18 @@ tr.error {}
   min-height: 260px;
   width: auto;
 }
+
+
+/* =============================================================================
+ *   Danielle and Andrew 
+ * ========================================================================== */
+
+/*set alarm time*/
+.fieldset-legend{
+font-family: 'Dancing Script', cursive;
+	color: white;
+	font-weight: bold;	
+}
+
+
+
