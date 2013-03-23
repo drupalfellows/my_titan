@@ -37,6 +37,9 @@ projects[elysia_cron][version] = 2.1
 projects[entity][subdir] = contrib
 projects[entity][version] = 1.0
 
+projects[environment_indicator][subdir] = contrib
+projects[environment_indicator][version] = 1.1
+
 projects[features][subdir] = contrib
 projects[features][version] = 1.0
 
