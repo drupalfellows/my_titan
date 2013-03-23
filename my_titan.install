@@ -121,5 +121,14 @@ function my_titan_update_5(&$sandbox) {
  * Enabled the views_slideshow module
  */
 function my_titan_update_6(&$sandbox) {
-  module_enabled(array('views_slideshow'));
+  module_enable(array('views_slideshow'));
+}
+
+/**
+ * Enable the environment_indicator module.
+ */
+function my_titan_update_7(&$sandbox) {
+  module_enable(array('environment_indicator'));
+  variable_set('environment_indicator_text', t('Development'));
+  variable_set('environment_indicator_position', 'right');
 }
