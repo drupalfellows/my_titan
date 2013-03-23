@@ -167,9 +167,7 @@ var {
  * Wraps the sidebars the content column
  */
 #columns {
-			background-image: url(../images/imageAssets/WEB/HOMEPAGE/home_slogan.png);
-
-			background-image: repeat-x;
+  background: transparent url('../images/imageAssets/WEB/HOMEPAGE/home_slogan.png') no-repeat scroll center top;
 }
 
 /*
