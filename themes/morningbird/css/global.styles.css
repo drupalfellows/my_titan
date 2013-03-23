@@ -168,6 +168,9 @@ var {
 #content-column {
 	padding-top: 2.071em;
 }
+.not-front #content-column .content-inner {
+	margin: 0 12.25em;
+}
 
 /*
  * Wraps the main-content-header, the content region and feed-icons. Use this wrapper to style the entire main content column
