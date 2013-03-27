@@ -1853,7 +1853,8 @@ width:98%;
 }
 
 #edit-field-set-occasion-und-0-value{
-width:76%;
+width:99%;
+height: 5em;
 }
 
 #edit-field-associated-alarms{
@@ -1862,10 +1863,34 @@ display:none;
 
 .form-item-field-set-subject-und{
 width:98%;
+/*
+background: white url('../images/subj_history.png');
+background-repeat: no-repeat;
+*/
 }
 
 .form-item-field-set-difficulty-und{
 width:98%;
+}
+
+#edit-submit{
+    background-color: #F69022;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 10px 15px;
+    text-align: center;
+    box-shadow: 0 5px 0 #D77C2D;
+    -moz-box-shadow: 0 5px 0 #D77C2D;
+    -webkit-box-shadow: 0 5px 0 #D77C2D;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+}
+
+#edit-submit:hover{    background-color: #D77C2D;
+    box-shadow: 0 5px 0 #F69022;
+    -moz-box-shadow: 0 5px 0 #F69022;
+    -webkit-box-shadow: 0 5px 0 #F69022;
 }
 
 
