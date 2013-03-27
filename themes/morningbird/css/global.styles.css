@@ -1843,5 +1843,39 @@ font-family: 'Dancing Script', cursive;
 	font-weight: bold;	
 }
 
+.form-item {
+display:inline-block;
+margin:0.5em;
+}
+
+.form-item-field-set-occasion-und-0-value{
+width:98%;
+}
+
+#edit-field-set-occasion-und-0-value{
+width:76%;
+}
+
+#edit-field-associated-alarms{
+display:none;
+}
+
+.form-item-field-set-subject-und{
+width:98%;
+}
+
+.form-item-field-set-difficulty-und{
+width:98%;
+}
+
+
+background-color:red
+
+
+
+
+
+
+
 
 

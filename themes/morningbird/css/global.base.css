@@ -139,6 +139,7 @@ a:active {
 h1 {
   font-size: 2em;
   margin: 0.67em 0;
+  font-weight: normal;
 }
 
 h2 {
@@ -348,8 +349,13 @@ form {
  * Define consistent border, margin, and padding
  */
 fieldset {
+/*
   margin: 0 2px;
   padding: 0.35em 0.625em 0.75em;
+*/
+  margin: 0;
+  padding: 0;
+
 }
 
 /*
