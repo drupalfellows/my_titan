@@ -30,7 +30,7 @@
  * ========================================================================== */
 
 /*
- * To preserve theme settings never apply font properties to the HTML element.
+ * To preserve theme f  settings never apply font properties to the HTML element.
  * This is critically important if you are using the Responsive JavaScript
  * feature as this relies on being able to set a pseudo font family on the HTML
  * element. If you need to set default font properties of any kind use the BODY
