@@ -1885,6 +1885,7 @@ width:98%;
     border-radius: 5px;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
+    color: #FFFFFF;
 }
 
 #edit-submit:hover{    background-color: #D77C2D;
@@ -1892,6 +1893,11 @@ width:98%;
     -moz-box-shadow: 0 5px 0 #F69022;
     -webkit-box-shadow: 0 5px 0 #F69022;
 }
+
+#crumbs {
+	display: none;
+}
+
 
 
 background-color:red
