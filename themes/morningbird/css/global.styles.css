@@ -1957,3 +1957,6 @@ color: #F69022;
 	background: #f69022 url('../images/imageAssets/WEB/ALARMS/button_delete.png') no-repeat scroll center center;
 */
 }
+#messages {
+	display:none;
+}
