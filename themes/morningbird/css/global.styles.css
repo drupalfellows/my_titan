@@ -169,7 +169,6 @@ var {
 	padding-top: 2.071em;
 }
 .not-front #content-column .content-inner {
-	margin: 0 12.25em;
 }
 
 /*
@@ -345,15 +344,15 @@ var {
 	margin-left:68px;
 }
 
-#node-1{
+.view-actualslideshow #node-1{
 	display: none;
 }
 
-.feed-icon{
+.view-actualslideshow .feed-icon{
 	display: none;
 }
 
-.view-content{
+.view-actualslideshow .view-content{
 	padding-top: 100px;
 }
 
@@ -482,7 +481,9 @@ ul.links li {
 /*
  * First sidebar
  */
-.region-sidebar-first {}
+.region-sidebar-first {
+	margin-top: 300px;
+}
 
 /*
  * Second sidebar
@@ -1900,13 +1901,35 @@ width:98%;
 
 
 
-background-color:red
 
-
-
-
-
-
-
-
-
+#block-views-alarms-added-block {
+	background: white;
+	color: black;
+	border-radius: 7px;
+}
+#block-views-alarms-added-block .block-title {
+	color: black;
+	font-family: 'Fjalla One', sans-serif;
+	font-size: 1.1em;
+	line-height: 2em;
+	margin: 0;
+	padding-top: 10px;
+}
+#block-views-alarms-added-block .view-alarms-added .views-field-nothing > .time {
+    font-family: 'Fjalla One', sans-serif;
+    font-size: 1.5em;
+}
+#block-views-alarms-added-block .view-alarms-added .views-field-nothing > .occasion {
+    color: #555;
+    font-size: 0.8em;
+    line-height: 0.8em;
+    font-family: 'Fjalla One', sans-serif;
+}
+#block-views-alarms-added-block .view-alarms-added .views-field-edit-node > a {
+	text-indent: -1000px;
+	background: transparent url('../images/imageAssets/WEB/ALARMS/editalarm_small.png') no-repeat scroll center center;
+}
+#block-views-alarms-added-block .view-alarms-added .views-field-delete-node > a {
+	text-indent: -1000px;
+	background: #f69022 url('../images/imageAssets/WEB/ALARMS/button_delete.png') no-repeat scroll center center;
+}
