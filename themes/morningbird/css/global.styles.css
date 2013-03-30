@@ -1797,6 +1797,15 @@ tr.error {}
   padding: 20px 0;
 }
 
+#page-title {
+	color: black;
+	font-family: 'Fjalla One', sans-serif;
+	font-size: 1.1em;
+	line-height: 2em;
+	margin: 0;
+	padding-top: 10px;
+	font-weight: bold;
+}
 
 /* =============================================================================
  *   Misc overrides for contrib modules
@@ -1906,6 +1915,7 @@ width:98%;
 	background: white;
 	color: black;
 	border-radius: 7px;
+	margin-top: -7em;
 }
 #block-views-alarms-added-block .block-title {
 	color: black;
@@ -1926,10 +1936,24 @@ width:98%;
     font-family: 'Fjalla One', sans-serif;
 }
 #block-views-alarms-added-block .view-alarms-added .views-field-edit-node > a {
+
+	color: #F69022;
+	 font-family: 'Fjalla One', sans-serif;
+	 text-transform: uppercase;
+	 font-size: 1.5em;
+/*
+
 	text-indent: -1000px;
 	background: transparent url('../images/imageAssets/WEB/ALARMS/editalarm_small.png') no-repeat scroll center center;
+*/
 }
 #block-views-alarms-added-block .view-alarms-added .views-field-delete-node > a {
+color: #F69022;
+	 font-family: 'Fjalla One', sans-serif;
+	 text-transform: uppercase;
+	 font-size: 1.5em;
+/*
 	text-indent: -1000px;
 	background: #f69022 url('../images/imageAssets/WEB/ALARMS/button_delete.png') no-repeat scroll center center;
+*/
 }
